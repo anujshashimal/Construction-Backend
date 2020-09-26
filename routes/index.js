@@ -1,5 +1,7 @@
-const userRouter= require('./Items')
+const itemRouter= require('./Items');
+const userRouter = require('./user');
 
 module.exports ={
-    userRouter,
+    itemRouter,
+    userRouter
 }
