@@ -10,7 +10,7 @@ router.post('/registerUsers', async( req, res) => {
         res.send(userDet);
         res.status(200).send("User Registered!");
     }catch (e){
-        res.status(404).send("Error");
+        res.status(404).send({description:e.message})
     }
 })
 //login as sitemanager and supplier
@@ -21,7 +21,7 @@ router.post('/userLogin', async( req, res) => {
         console.log("USERRR", users);
         res.send(users);
     }catch (e){
-        res.status(404).send("User Not found");
+        res.status(404).send({description:e.message})
     }
 })
 

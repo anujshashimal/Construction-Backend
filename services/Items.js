@@ -20,7 +20,7 @@ exports.getItemByUser = async (body) => {
     let items = [];
     items = await Items.find({"username":username})
     if(!items)
-        throw new Error
+        throw new Error("Item not found")
 
     return items
 }

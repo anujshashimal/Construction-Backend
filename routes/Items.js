@@ -8,7 +8,7 @@ router.post('/addItems', async( req, res) => {
         await items.SaveItems(body);
         res.status(200).send("Item Added");
     }catch (e){
-        res.status(404).send("Error");
+        res.status(404).send({description:e.message})
     }
 })
 
@@ -20,7 +20,7 @@ router.post('/getItemsByUser', async (req, res) => {
         res.send(itemsArray);
         res.status(200).send("Item Fetched!");
     }catch (e){
-        console.log(e)
+        res.status(404).send({description:e.message})
     }
 })
 
@@ -28,7 +28,7 @@ router.get('/health', async( req, res) => {
     try{
         res.status(200).send("passes");
     }catch (e){
-        res.status(404).send("failed");
+        res.status(404).send({description:e.message})
     }
 } )
 module.exports=router;
