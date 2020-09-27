@@ -12,7 +12,7 @@ router.post('/addItems', async( req, res) => {
     }
 })
 
-router.get('/getItemsByUser', async (req, res) => {
+router.post('/getItemsByUser', async (req, res) => {
     try{
         const body = req.body;
         let itemsArray = [];
@@ -22,7 +22,6 @@ router.get('/getItemsByUser', async (req, res) => {
     }catch (e){
         console.log(e)
     }
-
 })
 
 router.get('/health', async( req, res) => {

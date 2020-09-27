@@ -11,9 +11,20 @@ exports.RegisterUsers = async (body)=>{
         email,
         userType
     });
-    const result = await userDetails.save();
-    if(!result)
-        throw new Error;
+    const usernmeExits = await this.FindUser(username);
+    console.log(usernmeExits)
+    if(usernmeExits.length == 0){
+        if(userType === "sitemanager"|| userType === "employee" || userType ==="supiler"){
+            const result = await userDetails.save();
+            return result
+        }else{
+            throw new Error("Username Type is invlaid")
+
+        }
+
+    }
+    throw new Error("Username already exists!")
+
 }
 
 exports.LoginUser = async (body) => {
@@ -24,4 +35,11 @@ exports.LoginUser = async (body) => {
         throw new Error;
 
     return dat[0]
+}
+
+exports.FindUser = async (username) =>{
+    let usernameList = [];
+    const dat = await Users.find({username: username})
+    dat.forEach(data => usernameList.push(data.username));
+    return usernameList;
 }

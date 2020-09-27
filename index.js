@@ -7,7 +7,7 @@ const cors = require('cors');
 const conn = require('./dbCon/Connection');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const {userRouter, itemRouter} = require('./routes')
+const {userRouter, itemRouter, siteManagerRouter} = require('./routes')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 app.use('/items', itemRouter);
 app.use('/users', userRouter);
+app.use('/siteManager', siteManagerRouter);
 
 mongoose.connect(conn.database,{useNewUrlParser:true,useCreateIndex:true});
 const connection = mongoose.connection;
