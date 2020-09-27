@@ -11,7 +11,7 @@ router.get('/getSiteManagers', async( req, res) => {
 
         res.json(userDet);
     }catch (e){
-        res.status(404).send("Error");
+        res.status(404).send({description:e.message})
     }
 })
 
@@ -41,4 +41,15 @@ router.post('/updateProfile/:userID', async( req, res) => {
     }
 })
 
+
+router.post('/deleteProfile/:userID', async( req, res) => {
+    try{
+        const {userID} = req.params;
+        const userDet = await siteManager.deleteSiteManagerByID(userID);
+        res.json(userDet);
+
+    }catch (e){
+        res.status(404).send({description:e.message})
+    }
+})
 module.exports=router;

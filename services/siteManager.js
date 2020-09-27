@@ -25,5 +25,15 @@ exports.updateSiteMnagerById = async (userID, body) => {
 
     console.log("awd", id)
     return id
+}
 
+exports.deleteSiteManagerByID = async (userID) => {
+    console.log("here", userID)
+
+    const id = await Users.findOneAndDelete({userID: userID})
+    if(id==null|| id == undefined)
+        throw new Error("Unable to delete user!")
+
+    console.log("awd", id)
+    return id
 }
