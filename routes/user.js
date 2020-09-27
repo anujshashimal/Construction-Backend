@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const user = require('../services/user');
 
+//Register as sitemanager, and supplier
 router.post('/registerUsers', async( req, res) => {
     try{
         const body = req.body;
@@ -12,7 +13,7 @@ router.post('/registerUsers', async( req, res) => {
         res.status(404).send("Error");
     }
 })
-
+//login as sitemanager and supplier
 router.post('/userLogin', async( req, res) => {
     try{
         const body = req.body;
