@@ -12,8 +12,18 @@ exports.getAllSiteManagers = async(userType) => {
 exports.getSiteManagerById = async (userID, userType) => {
     const id = await Users.find({userID: userID,userType:userType })
     if(id === null)
-        return Error
+        throw new Error("Unable to find user!")
+    return id
+}
 
+exports.updateSiteMnagerById = async (userID, body) => {
+    console.log("here", userID)
+
+    const id = await Users.findOneAndUpdate({userID: userID}, body)
+    if(id==null|| id == undefined)
+        throw new Error("Unable to find user!")
+
+    console.log("awd", id)
     return id
 
 }

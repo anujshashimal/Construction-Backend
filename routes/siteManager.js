@@ -24,20 +24,20 @@ router.get('/:userID', async( req, res) => {
         res.json(userDet);
 
     }catch (e){
-        res.status(404).send("Error");
+        res.status(404).send({description:e.message})
     }
 })
 
 //update sitemanager profile by id
-router.get('/:userID', async( req, res) => {
+router.post('/updateProfile/:userID', async( req, res) => {
     try{
-        const userType = "sitemanager";
         const {userID} = req.params;
-        const userDet = await siteManager.getSiteManagerById(userID, userType);
+        console.log("aed", req.body)
+        const userDet = await siteManager.updateSiteMnagerById(userID, req.body);
         res.json(userDet);
 
     }catch (e){
-        res.status(404).send("Error");
+        res.status(404).send({description:e.message})
     }
 })
 
