@@ -52,4 +52,16 @@ router.post('/deleteProfile/:userID', async( req, res) => {
         res.status(404).send({description:e.message})
     }
 })
+
+router.get('/getSitemanager/product', async (req, res) => {
+
+    try{
+        const {userID} = req.name;
+        const reuslt = await siteManager.getProductByID();
+        res.json(result)
+    }catch (e) {
+        res.json(404).send({description:e.message})
+    }
+
+})
 module.exports=router;

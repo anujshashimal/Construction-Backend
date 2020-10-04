@@ -37,3 +37,6 @@ exports.deleteSiteManagerByID = async (userID) => {
     console.log("awd", id)
     return id
 }
+exports.getProductByID = async (userID) =>{
+
+}
