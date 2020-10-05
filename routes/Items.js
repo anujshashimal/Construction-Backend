@@ -18,7 +18,6 @@ router.post('/getItemsByUser', async (req, res) => {
         let itemsArray = [];
         itemsArray = await items.getItemByUser(body);
         res.send(itemsArray);
-        res.status(200).send("Item Fetched!");
     }catch (e){
         res.status(404).send({description:e.message})
     }
@@ -31,4 +30,27 @@ router.get('/health', async( req, res) => {
         res.status(404).send({description:e.message})
     }
 } )
+
+router.post('/getRequestingNumberList', async( req, res) => {
+    try{
+        let reqIDs = [];
+        reqIDs = await items.getAllByReqNumber();
+        res.json(reqIDs);
+    }catch (e){
+        res.status(404).send({description:e.message})
+    }
+})
+
+router.post('/getItemsByReqNumbers', async (req, res) => {
+    try{
+        let itemsDet = [];
+        const body = req.body;
+        itemsDet = await items.getAllItemsByReqNumber(body);
+        res.json(itemsDet);
+    }catch (e) {
+        res.status(404).send({description:e.message})
+    }
+
+})
+
 module.exports=router;
