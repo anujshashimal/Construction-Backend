@@ -31,10 +31,9 @@ router.get('/health', async( req, res) => {
     }
 } )
 
-router.post('/getRequestingNumberList', async( req, res) => {
+router.get('/getRequestingNumberList', async( req, res) => {
     try{
-        let reqIDs = [];
-        reqIDs = await items.getAllByReqNumber();
+        const reqIDs = await items.getAllByReqNumber();
         res.json(reqIDs);
     }catch (e){
         res.status(404).send({description:e.message})
@@ -43,9 +42,8 @@ router.post('/getRequestingNumberList', async( req, res) => {
 
 router.post('/getItemsByReqNumbers', async (req, res) => {
     try{
-        let itemsDet = [];
         const body = req.body;
-        itemsDet = await items.getAllItemsByReqNumber(body);
+        const itemsDet = await items.getAllItemsByReqNumber(body);
         res.json(itemsDet);
     }catch (e) {
         res.status(404).send({description:e.message})
