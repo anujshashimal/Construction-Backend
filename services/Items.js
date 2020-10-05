@@ -27,10 +27,9 @@ exports.getItemByUser = async (body) => {
 }
 
 exports.getAllByReqNumber = async () => {
-    let resIDs = [];
     const dat = await User.find({}, {userID:1})
-    dat.forEach(data => {resIDs.push(data.userID)})
-    return resIDs;
+  //  dat.forEach(data => {resIDs.push(data.userID)})
+    return dat;
 }
 
 exports.getAllItemsByReqNumber = async (body) => {
