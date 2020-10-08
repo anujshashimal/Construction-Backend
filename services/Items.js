@@ -1,4 +1,5 @@
 let Items = require('../models/Items');
+let User = require('../models/user');
 
 exports.SaveItems = async (body)=>{
 
@@ -20,7 +21,23 @@ exports.getItemByUser = async (body) => {
     let items = [];
     items = await Items.find({"username":username})
     if(!items)
-        throw new Error
+        throw new Error("Item not found")
 
     return items
+}
+
+exports.getAllByReqNumber = async () => {
+    const dat = await User.find({}, {userID:1})
+  //  dat.forEach(data => {resIDs.push(data.userID)})
+    return dat;
+}
+
+exports.getAllItemsByReqNumber = async (body) => {
+    const {ItemID} = body;
+    let items = [];
+    console.log(ItemID)
+    items = await Items.find({"ItemID":ItemID})
+
+    return items
+
 }
