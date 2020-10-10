@@ -40,3 +40,17 @@ exports.deleteSiteManagerByID = async (userID) => {
 exports.getProductByID = async (userID) =>{
 
 }
+
+exports.getSiteManagerApproval = async (body) => {
+    let Price, Qty;
+    let totalVal = 0;
+    body.forEach(val => {
+        totalVal = totalVal + (val.itemPrice * val.itemQty)
+    })
+    console.log("totalVal", totalVal)
+    if(totalVal > 100000){
+        return "PENDING"
+    }else{
+        return "APPROVE"
+    }
+}

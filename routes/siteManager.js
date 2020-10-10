@@ -64,4 +64,30 @@ router.get('/getSitemanager/product', async (req, res) => {
     }
 
 })
+
+//approve/decline request
+router.post('/approveReq', async(req, res) => {
+    try{
+        const body = req.body
+        console.log("BODYITEM",body)
+
+        const status = await siteManager.getSiteManagerApproval(body);
+        console.log({status})
+        res.json({status});
+
+    }catch (e) {
+        res.json(404).send({description:e.message})
+    }
+})
+
+//Place purchase orders
+router.post('/placeorders', async(req, res) => {
+    try{
+        const body = req.body
+        console.log("BODYITEM",body)
+
+    }catch (e) {
+        res.json(404).send({description:e.message})
+    }
+})
 module.exports=router;
