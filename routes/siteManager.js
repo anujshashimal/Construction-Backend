@@ -72,10 +72,8 @@ router.post('/approveReq', async(req, res) => {
     try{
         const body = req.body
         console.log("BODYITEM",body)
-
+        await appOrPending.saveAppOrReq(body);
         const status = await siteManager.getSiteManagerApproval(body);
-        const rr = await appOrPending.saveAppOrReq(body);
-        console.log(rr)
         res.json({status});
 
     }catch (e) {

@@ -19,9 +19,9 @@ exports.saveAppOrReq = async (body)=>{
         })
 
         const result = coll.save().then(()=> {console.log("Success!")})
+        console.log("adawdaw", result)
 
     })
 
 
-    console.log("adaw", result)
 }
