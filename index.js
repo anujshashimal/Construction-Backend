@@ -4,10 +4,10 @@ process.cwd()
 require('dotenv').config()
 const port = process.env.PORT || 3000;
 const cors = require('cors');
-const conn = require('../dbCon/Connection');
+const conn = require('./dbCon/Connection.js');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const {userRouter, itemRouter, siteManagerRouter} = require('../routes')
+const {userRouter, itemRouter, siteManagerRouter} = require('./routes')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
