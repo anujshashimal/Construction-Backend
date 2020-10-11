@@ -8,7 +8,7 @@ router.post('/addItems', async( req, res) => {
         await items.SaveItems(body);
         res.status(200).send("Item Added");
     }catch (e){
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 })
 
@@ -19,7 +19,7 @@ router.post('/getItemsByUser', async (req, res) => {
         itemsArray = await items.getItemByUser(body);
         res.send(itemsArray);
     }catch (e){
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 })
 
@@ -27,7 +27,7 @@ router.get('/health', async( req, res) => {
     try{
         res.status(200).send("passes");
     }catch (e){
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 } )
 
@@ -36,7 +36,7 @@ router.get('/getRequestingNumberList', async( req, res) => {
         const reqIDs = await items.getAllByReqNumber();
         res.json(reqIDs);
     }catch (e){
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 })
 
@@ -46,7 +46,7 @@ router.post('/getItemsByReqNumbers', async (req, res) => {
         const itemsDet = await items.getAllItemsByReqNumber(body);
         res.json(itemsDet);
     }catch (e) {
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 
 })
