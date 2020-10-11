@@ -9,7 +9,7 @@ router.post('/registerUsers', async( req, res) => {
         await user.RegisterUsers(body);
         res.status(200).send("success!")
     }catch (e){
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 })
 
@@ -21,7 +21,7 @@ router.post('/userLogin', async( req, res) => {
         console.log("USERRR", users);
         res.json(users);
     }catch (e){
-        res.status(404).send({description:e.message})
+        res.send({description:e.message})
     }
 })
 

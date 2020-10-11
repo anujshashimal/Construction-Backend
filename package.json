@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "anuj",
@@ -17,13 +17,12 @@
     "mongoose": "^5.10.7",
     "nodemailer": "^6.4.13",
     "nodemon": "^2.0.4",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": "v13.8.0"
   },
-  "devDependencies": {
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
-  }
+  "devDependencies": {}
 }
