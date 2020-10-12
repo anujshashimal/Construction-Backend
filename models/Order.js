@@ -27,6 +27,9 @@ const Order = new Schema({
     requiredDate:{
         type:String,
         required: true
+    },
+    status:{
+        type:String
     }
 });
 

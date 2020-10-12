@@ -14,7 +14,7 @@ exports.RegisterUsers = async (body)=>{
     const usernmeExits = await this.FindUser(username);
     console.log(usernmeExits)
     if(usernmeExits.length == 0){
-        if(userType === "sitemanager"|| userType === "employee" || userType ==="supiler"){
+        if(userType === "sitemanager"|| userType === "employee" || userType ==="supplier"){
             const result = await userDetails.save();
             return result
         }else{

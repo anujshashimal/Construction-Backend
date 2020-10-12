@@ -2,7 +2,6 @@ let Users = require('../models/user');
 
 
 exports.getAllSiteManagers = async(userType) => {
-    console.log("dasst", userType)
     const dat = await Users.find({userType: userType})
     if(!dat)
         return Error;

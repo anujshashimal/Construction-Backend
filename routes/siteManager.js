@@ -85,10 +85,34 @@ router.post('/approveReq', async(req, res) => {
 router.post('/placeorders', async(req, res) => {
     try{
         const body = req.body
-        const result = await order.saveOrderItems(body)
-        res.send(result)
+        await order.saveOrderItems(body)
+        res.json({reuslt:"Saved Order details in the DB"})
     }catch (e) {
         res.send({description:e.message})
     }
 })
+
+//get All Approve Orders By Req ID
+router.post('/getPlaceOrders', async(req, res) => {
+    try{
+        const body = req.body;
+        const result = await order.getPlaceOrderDetails(body)
+        res.json(result);
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
+
+//get All ReqId when Supplier approved
+router.post('/getAllOrdersReqIds', async(req, res) => {
+    try{
+        console.log("AWD")
+        const result = await order.FindAllItemsReqIdByOrderCollection()
+        console.log("RSS", result)
+        res.json({result})
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
+
 module.exports=router;
