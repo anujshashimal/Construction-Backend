@@ -1,4 +1,5 @@
 let Users = require('../models/user');
+let AppOrPending = require('../models/AppOrPenRequest');
 
 
 exports.getAllSiteManagers = async(userType) => {
@@ -52,4 +53,22 @@ exports.getSiteManagerApproval = async (body) => {
     }else{
         return "APPROVE"
     }
+}
+
+exports.deleteItemsWhenReceived = async (body) => {
+
+    let {reqID, itemDescription} = body
+    console.log("awdww",reqID, itemDescription)
+    const items = await AppOrPending.find({"reqID":reqID})
+    console.log("ewe", itemDescription)
+    let result;
+    for (const data of items) {
+        for(const da of itemDescription){
+            if(da === data.itemDescription){
+                result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
+            }
+        }
+    }
+    return result
+
 }

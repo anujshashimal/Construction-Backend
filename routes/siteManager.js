@@ -71,7 +71,6 @@ router.get('/getSitemanager/product', async (req, res) => {
 router.post('/approveReq', async(req, res) => {
     try{
         const body = req.body
-        console.log("BODYITEM",body)
         await appOrPending.saveAppOrReq(body);
         const status = await siteManager.getSiteManagerApproval(body);
         res.json({status});
@@ -106,13 +105,25 @@ router.post('/getPlaceOrders', async(req, res) => {
 //get All ReqId when Supplier approved
 router.post('/getAllOrdersReqIds', async(req, res) => {
     try{
-        console.log("AWD")
         const result = await order.FindAllItemsReqIdByOrderCollection()
-        console.log("RSS", result)
         res.json({result})
     }catch (e) {
         res.send({description:e.message})
     }
+})
+
+router.post('/deleteReceivedItems', async (req, res) => {
+    try{
+        const body = req.body;
+        const result = await siteManager.deleteItemsWhenReceived(body)
+        console.log("reuslt",result)
+        if(result === undefined)
+            res.send(null)
+        res.send({result})
+    }catch (e) {
+        res.send({description:e.message})
+    }
+
 })
 
 module.exports=router;

@@ -28,7 +28,8 @@ exports.getPlaceOrderDetails = async (body) => {
     if(getDetails==null|| getDetails == undefined||getDetails.length==0){
         throw new Error("Unable to find Request ID");
     }
-    const data = this.FindReqIDItems(reqID)
+    const data = await this.FindReqIDItems(reqID)
+    console.log("GEEE", data)
     return data;
 
 }
@@ -49,12 +50,19 @@ exports.FindReqIDItems = async (reqID) => {
     details.forEach(data => itemsList.push(data));
     return itemsList;
 }
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
 
 exports.FindAllItemsReqIdByOrderCollection = async () => {
     console.log("HEREE")
     let reqIDs =[];
     const dat = await Order.find({}, {reqID:1})
+
      dat.forEach(dat => {reqIDs.push(dat.reqID)})
-    return reqIDs;
+
+    const unique = reqIDs.filter(onlyUnique);
+
+    return unique;
 }
 
