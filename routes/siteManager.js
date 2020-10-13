@@ -123,7 +123,21 @@ router.post('/deleteReceivedItems', async (req, res) => {
     }catch (e) {
         res.send({description:e.message})
     }
+})
 
+
+//sitemanager decline request
+router.post('/declineRequest', async (req, res) => {
+    try{
+        const body = req.body;
+        const result =  await siteManager.declineRequestion(body)
+        console.log("result",result)
+        if(result === undefined|| result === null)
+            res.send({result:"Requesting ID is invlaid"})
+        res.json({result})
+    }catch (e) {
+        res.send({description:e.message})
+    }
 })
 
 module.exports=router;

@@ -1,6 +1,6 @@
 let Users = require('../models/user');
 let AppOrPending = require('../models/AppOrPenRequest');
-
+let items = require('../models/Items');
 
 exports.getAllSiteManagers = async(userType) => {
     const dat = await Users.find({userType: userType})
@@ -70,5 +70,16 @@ exports.deleteItemsWhenReceived = async (body) => {
         }
     }
     return result
+}
+
+exports.declineRequestion = async (body) => {
+    const {reqID} = body
+    console.log("REQID",reqID)
+
+    const declineReq = await items.deleteMany({ItemID:reqID})
+    console.log("declineReq", declineReq.deletedCount);
+    if(declineReq.deletedCount === 0)
+        return null
+    return "deleted"
 
 }
