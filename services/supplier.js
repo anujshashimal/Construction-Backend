@@ -40,7 +40,7 @@ exports.getSupplierEmail = async(supplier, reqID, body) => {
     console.log("Order Info", orderInfo[0].Item_Description)
 
     let sentinfo = {
-        to: "lahirulakruwan5@gmail.com",
+        to: Supplieremail,
         subject: "Order is Pending",
         html:
             '<form style="background-color: #ffffff" ' +
