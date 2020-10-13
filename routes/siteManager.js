@@ -3,7 +3,7 @@ const router = express.Router();
 const siteManager = require('../services/siteManager');
 const order = require('../services/order');
 const appOrPending = require('../services/ApproveOrPending');
-
+const supplier = require('../services/supplier')
 //get all site managers
 router.get('/getSiteManagers', async( req, res) => {
     try{
@@ -85,6 +85,7 @@ router.post('/placeorders', async(req, res) => {
     try{
         const body = req.body
         await order.saveOrderItems(body)
+        await supplier.getSupplierEmail(body.supplier, body.reqID, body);
         res.json({reuslt:"Saved Order details in the DB"})
     }catch (e) {
         res.send({description:e.message})
@@ -123,7 +124,21 @@ router.post('/deleteReceivedItems', async (req, res) => {
     }catch (e) {
         res.send({description:e.message})
     }
+})
 
+
+//sitemanager decline request
+router.post('/declineRequest', async (req, res) => {
+    try{
+        const body = req.body;
+        const result =  await siteManager.declineRequestion(body)
+        console.log("result",result)
+        if(result === undefined|| result === null)
+            res.send({result:"Requesting ID is invlaid"})
+        res.json({result})
+    }catch (e) {
+        res.send({description:e.message})
+    }
 })
 
 module.exports=router;
