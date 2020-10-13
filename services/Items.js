@@ -37,7 +37,7 @@ exports.getAllItemsByReqNumber = async (body) => {
     let items = [];
     console.log(ItemID)
     items = await Items.find({"ItemID":ItemID})
-
+    console.log("temds", items)
     return items
 
 }

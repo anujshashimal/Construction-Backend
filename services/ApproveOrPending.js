@@ -4,12 +4,12 @@ exports.saveAppOrReq = async (body)=>{
     console.log("BOD",body)
     let arr = []
     let reqID, itemDescription,itemPrice,itemQty;
-
-    body.forEach(data => {
+     for (const data of body) {
             reqID = data.reqID,
-            itemDescription= data.itemDescription,
+            itemDescription = data.itemDescription,
             itemPrice = data.itemPrice,
             itemQty= data.itemQty
+            console.log("HH", reqID, itemDescription,itemPrice,itemQty)
 
         const coll = new AppOrPending({
             reqID,
@@ -18,10 +18,10 @@ exports.saveAppOrReq = async (body)=>{
             itemQty
         })
 
-        const result = coll.save().then(()=> {console.log("Success!")})
+        const result = await coll.save().then(()=> {console.log("Success!")})
         console.log("adawdaw", result)
 
-    })
+    }
 
 
 }
