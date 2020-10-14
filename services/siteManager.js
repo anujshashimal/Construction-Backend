@@ -1,5 +1,7 @@
 let Users = require('../models/user');
 let AppOrPending = require('../models/AppOrPenRequest');
+let pendingItems = require('../models/PendingItems');
+
 let items = require('../models/Items');
 let ApprovedService = require('../services/ApproveOrPending');
 
@@ -50,14 +52,19 @@ exports.getSiteManagerApproval = async (body) => {
         totalVal = totalVal + (val.itemPrice * val.itemQty)
         reqID = val.reqID
     })
+
+    const managerApprovedItems = await this.getTheStatus()
+    console.log("CHECK", managerApprovedItems)
     console.log("totalVal", reqID)
-    if(totalVal > 100000){
+    if(totalVal < 100000 ){
+        await ApprovedService.saveAppOrReq(body);
+        await ApprovedService.saveAppOrReq(managerApprovedItems);
+        await ApprovedService.deletePendingItems(managerApprovedItems);
+        return "APPROVE"
+    }else{
         console.log("TOTAL", reqID)
         await this.savePendingValue(reqID)
         return "PENDING"
-    }else{
-        await ApprovedService.saveAppOrReq(body);
-        return "APPROVE"
     }
 }
 
@@ -100,4 +107,27 @@ exports.savePendingValue = async (reqID) => {
     console.log("PEN", peningItemsInfo)
 }
 
+exports.getTheStatusOfPendingStatus = async (reqID, status) => {
 
+    console.log(reqID, status)
+    const idset = await this.getALlPendingItemsId(reqID)
+    for (const data of idset) {
+        if(data.reqID === reqID){
+            const result = await pendingItems.findOneAndUpdate({"reqID":reqID,"status":status})
+        }
+    }
+
+}
+
+exports.getTheStatus = async () => {
+
+    const result = await pendingItems.find({"status":"APPROVED"})
+    console.log("RES", result)
+    return result
+}
+
+exports.getALlPendingItemsId = async (resID) => {
+    const reuslt = await pendingItems.find({reqID:resID})
+    console.log("MYS", reuslt)
+    return reuslt
+}
