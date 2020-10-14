@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const ApproveOrPending = new Schema({
+const ApprovedItems = new Schema({
 
         reqID:{
             type: String
@@ -18,6 +18,6 @@ const ApproveOrPending = new Schema({
 
 });
 
-const AppOrPenModel = mongoose.model('ApproveOrPending',ApproveOrPending);
+const ApprovedModel = mongoose.model('ApprovedItems',ApprovedItems);
 
-module.exports = AppOrPenModel;
+module.exports = ApprovedModel;
