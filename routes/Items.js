@@ -51,4 +51,27 @@ router.post('/getItemsByReqNumbers', async (req, res) => {
 
 })
 
+
+//get all pending requesting number list
+router.get('/getAllPendingReqNumberList', async( req, res) => {
+    try{
+        const reqIDs = await items.getAllPendingReqItems();
+        res.json(reqIDs);
+    }catch (e){
+        res.send({description:e.message})
+    }
+})
+
+//get all pending items by req id
+router.post('/getPendingItemByReqID', async( req, res) => {
+    try{
+        const body = req.body;
+        console.log(body)
+        const reqIDs = await items.getPendingItemByReqId(body);
+        res.json(reqIDs);
+    }catch (e){
+        res.send({description:e.message})
+    }
+})
+
 module.exports=router;

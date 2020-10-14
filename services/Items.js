@@ -1,5 +1,6 @@
 let Items = require('../models/Items');
 let User = require('../models/user');
+let PendingItems = require('../models/PendingItems');
 
 exports.SaveItems = async (body)=>{
 
@@ -38,6 +39,21 @@ exports.getAllItemsByReqNumber = async (body) => {
     console.log(ItemID)
     items = await Items.find({"ItemID":ItemID})
     console.log("temds", items)
+    return items
+
+}
+
+exports.getAllPendingReqItems = async () => {
+    const dat = await PendingItems.find({}, {reqID:1})
+    return dat;
+}
+
+
+exports.getPendingItemByReqId = async (body) => {
+    const {reqID} = body;
+    let items = [];
+    console.log(reqID)
+    items = await PendingItems.find({"reqID":reqID})
     return items
 
 }
