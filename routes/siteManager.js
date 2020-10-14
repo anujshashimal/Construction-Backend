@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const siteManager = require('../services/siteManager');
 const order = require('../services/order');
-const appOrPending = require('../services/ApproveOrPending');
 const supplier = require('../services/supplier')
 //get all site managers
 router.get('/getSiteManagers', async( req, res) => {
@@ -71,7 +70,6 @@ router.get('/getSitemanager/product', async (req, res) => {
 router.post('/approveReq', async(req, res) => {
     try{
         const body = req.body
-        await appOrPending.saveAppOrReq(body);
         const status = await siteManager.getSiteManagerApproval(body);
         res.json({status});
 
@@ -116,6 +114,8 @@ router.post('/getAllOrdersReqIds', async(req, res) => {
 router.post('/deleteReceivedItems', async (req, res) => {
     try{
         const body = req.body;
+        console.log("reuwwslt",body)
+
         const result = await siteManager.deleteItemsWhenReceived(body)
         console.log("reuslt",result)
         if(result === undefined)

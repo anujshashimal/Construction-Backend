@@ -66,3 +66,24 @@ exports.FindAllItemsReqIdByOrderCollection = async () => {
     return unique;
 }
 
+exports.managerSaveOrderItems = async (body)=>{
+
+    const {reqID, supplier, addressline1, addressline2, other, requiredDate, status} = body;
+    console.log("BODY ITEMS",reqID, supplier, addressline1, addressline2, other, requiredDate)
+    const OrderID = uuidv1();
+    const  orderDetails = new Order({
+        OrderID,
+        reqID,
+        supplier,
+        addressline1,
+        addressline2,
+        other,
+        requiredDate,
+        status
+    });
+    const result = await orderDetails.save().then(()=> {console.log("Success!")})
+    console.log("reuslt", result);
+    return result
+}
+
+
