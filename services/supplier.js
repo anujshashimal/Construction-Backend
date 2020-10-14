@@ -37,7 +37,7 @@ exports.getSupplierEmail = async(supplier, reqID, body) => {
     getSupplierEmail.forEach(data => {Supplieremail = data.email})
     const orderInfo = await items.find({ItemID:reqID})
 
-    console.log("Order Info", orderInfo[0].Item_Description)
+    // console.log("Order Info", orderInfo[0].Item_Description)
 
     let sentinfo = {
         to: Supplieremail,

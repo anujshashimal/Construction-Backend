@@ -10,26 +10,14 @@ const Invoiceinfo = new Schema({
         type:String,
         required: true
     },
-    supplier:{
-        type:String,
-        required: true
-    },
-    addressline1:{
-        type:String,
-        required: true
-    },
-    addressline2:{
+    itemDescription:{
         type:String,
     },
-    other:{
+    itemPrice:{
         type:String,
     },
-    requiredDate:{
-        type:String,
-        required: true
-    },
-    status:{
-        type:String
+    itemQty: {
+        type: String,
     }
 });
 

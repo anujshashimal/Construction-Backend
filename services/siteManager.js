@@ -1,9 +1,10 @@
 let Users = require('../models/user');
 let AppOrPending = require('../models/AppOrPenRequest');
 let pendingItems = require('../models/PendingItems');
-
+let invoice = require('../models/Invoice');
 let items = require('../models/Items');
 let ApprovedService = require('../services/ApproveOrPending');
+const { v1: uuidv1 } = require('uuid');
 
 exports.getAllSiteManagers = async(userType) => {
     const dat = await Users.find({userType: userType})
@@ -79,6 +80,8 @@ exports.deleteItemsWhenReceived = async (body) => {
     for (const data of items) {
         for(const da of itemDescription){
             if(da === data.itemDescription){
+                console.log("RESSSS",data)
+                const invoiceitm = await this.addReceivedItemsToInvoice(data)
                 result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
             }
         }
@@ -113,10 +116,11 @@ exports.getTheStatusOfPendingStatus = async (reqID, status) => {
     const idset = await this.getALlPendingItemsId(reqID)
     for (const data of idset) {
         if(data.reqID === reqID){
-            const result = await pendingItems.findOneAndUpdate({"reqID":reqID,"status":status})
+
+            const result = await pendingItems.updateMany({"reqID": reqID}, {"status": status})
+            console.log("wequhiuh",result)
         }
     }
-
 }
 
 exports.getTheStatus = async () => {
@@ -130,4 +134,25 @@ exports.getALlPendingItemsId = async (resID) => {
     const reuslt = await pendingItems.find({reqID:resID})
     console.log("MYS", reuslt)
     return reuslt
+}
+
+exports.addReceivedItemsToInvoice = async (data) => {
+    const items = []
+
+        const {reqID, itemDescription, itemPrice,itemQty} = data;
+        console.log("BODY ITEMS",reqID, itemDescription, itemPrice,itemQty)
+        const OrderID = uuidv1();
+        const  orderDetails = new invoice({
+            OrderID,
+            reqID,
+            itemDescription,
+            itemPrice,
+            itemQty
+        });
+        const result = await orderDetails.save().then(()=> {console.log("Success!")})
+        console.log("reuslt111", result);
+        return result;
+
+
+
 }
