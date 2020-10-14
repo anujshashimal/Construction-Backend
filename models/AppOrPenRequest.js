@@ -14,6 +14,9 @@ const ApprovedItems = new Schema({
         },
         itemQty:{
             type: String
+        },
+        status:{
+            type:String
         }
 
 });
