@@ -70,6 +70,7 @@ router.get('/getSitemanager/product', async (req, res) => {
 router.post('/approveReq', async(req, res) => {
     try{
         const body = req.body
+        console.log("MEEE", body)
         const status = await siteManager.getSiteManagerApproval(body);
         res.json({status});
 

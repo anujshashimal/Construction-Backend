@@ -18,5 +18,5 @@ exports.getInviceInfo = async (body) => {
         totalPrice = totalPrice + (data.itemQty * data.itemPrice)
     })
 
-    return {OrderID, reqID,itemsInfo,itemsInfo}
+    return {OrderID, reqID,totalPrice,itemsInfo,itemsInfo}
 }
