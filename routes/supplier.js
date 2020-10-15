@@ -32,7 +32,7 @@ router.post('/getAllItemsBySupplierName', async (req, res) => {
         const {username} = req.body
         console.log(username)
         const result = await supplier.getSupplierItemsByName(username)
-        res.json(result)
+        res.json({result})
     }catch (e) {
         res.send({description:e.message})
 
