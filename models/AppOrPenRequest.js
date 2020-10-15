@@ -24,10 +24,6 @@ const ApprovedItems = new Schema({
         employeeName:{
         type :String
         }
-        // ,
-        // managerApproval:{
-        //     type: String
-        // }
 
 });
 

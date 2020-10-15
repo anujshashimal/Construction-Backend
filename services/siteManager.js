@@ -6,7 +6,10 @@ let items = require('../models/Items');
 let ApprovedService = require('../services/ApproveOrPending');
 let itemsService = require('../services/Items');
 let userService = require('../services/user');
-
+const {SiteManager} = require('../Constants');
+const {
+    SITEMANAGER_APPROVE,SITEMANAGER_PENDING,SITEMANAGER_DECLINE
+}= SiteManager
 const { v1: uuidv1 } = require('uuid');
 
 exports.getAllSiteManagers = async(userType) => {
@@ -30,7 +33,6 @@ exports.updateSiteMnagerById = async (userID, body) => {
     if(id==null|| id == undefined)
         throw new Error("Unable to find user!")
 
-    console.log("awd", id)
     return id
 }
 
@@ -41,7 +43,6 @@ exports.deleteSiteManagerByID = async (userID) => {
     if(id==null|| id == undefined)
         throw new Error("Unable to delete user!")
 
-    console.log("awd", id)
     return id
 }
 exports.getProductByID = async (userID) =>{
@@ -49,18 +50,13 @@ exports.getProductByID = async (userID) =>{
 }
 
 exports.getSiteManagerApproval = async (body) => {
-    let Price, Qty;
+    let Price, Qty,reqID,empName;
     let totalVal = 0;
-    let reqID;
-    let empName;
-    console.log("wdqq")
+
     for (const val of body) {
         totalVal = totalVal + (val.itemPrice * val.itemQty)
         reqID = val.reqID
-        console.log("wdqq")
-
         empName = await userService.findEmployee(val.reqID)
-
     }
     const managerApprovedItems = await this.getTheStatus()
     console.log("CHECK", managerApprovedItems.length)
@@ -69,21 +65,19 @@ exports.getSiteManagerApproval = async (body) => {
     if(managerApprovedItems.length !== 0){
         await ApprovedService.saveAppOrReq(empName, managerApprovedItems);
         await ApprovedService.deletePendingItems(managerApprovedItems);
-        return "APPROVE"
-
+        return SITEMANAGER_APPROVE
     }
 
     if(totalVal < 100000 ){
         await ApprovedService.saveAppOrReq(empName, body);
         await itemsService.deleteItemsWhenApproved(body)
-
-        return "APPROVE"
+        return SITEMANAGER_APPROVE
     }else{
-        console.log("TOTAL", reqID)
+
         await this.savePendingValue(reqID)
         await ApprovedService.deleteFromApprovedItems(reqID)
         await itemsService.deleteItemsWhenApproved(body)
-        return "PENDING"
+        return SITEMANAGER_PENDING
     }
 }
 
@@ -93,15 +87,12 @@ exports.deleteItemsWhenReceived = async (body) => {
     employeeName = await userService.findEmployee( body.reqID)
 
     let {reqID, itemDescription} = body
-    console.log("awdww",reqID, itemDescription)
     const items = await AppOrPending.find({"reqID":reqIDs[0]})
-    console.log("ewe", itemDescription)
     let result;
     for (const data of items) {
         for(const da of itemDescription){
             if(da === data.itemDescription){
-                console.log("RESSSS",data)
-                const invoiceitm = await this.addReceivedItemsToInvoice(employeeName, data)
+                await this.addReceivedItemsToInvoice(employeeName, data)
                 result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
             }
         }
@@ -111,23 +102,19 @@ exports.deleteItemsWhenReceived = async (body) => {
 
 exports.declineRequestion = async (body) => {
     const {reqID} = body
-    console.log("REQID",reqID)
 
     const declineReq = await items.deleteMany({ItemID:reqID})
-    console.log("declineReq", declineReq.deletedCount);
     if(declineReq.deletedCount === 0)
         return null
-    return "deleted"
+    return SITEMANAGER_DECLINE
 
 }
 
 exports.savePendingValue = async (reqID) => {
 
     const reqIDs = reqID
-    console.log("HU",reqIDs)
     const peningItemsInfo = await items.find({ItemID: reqIDs})
-    const result = await ApprovedService.savePendingItems(peningItemsInfo)
-    console.log("PEN", peningItemsInfo)
+    await ApprovedService.savePendingItems(peningItemsInfo)
 }
 
 exports.getTheStatusOfPendingStatus = async (reqID, status) => {
@@ -136,32 +123,25 @@ exports.getTheStatusOfPendingStatus = async (reqID, status) => {
     const idset = await this.getALlPendingItemsId(reqID)
     for (const data of idset) {
         if(data.reqID === reqID){
-
             const result = await pendingItems.updateMany({"reqID": reqID}, {"status": status})
-            console.log("wequhiuh",result)
         }
     }
 }
 
 exports.getTheStatus = async () => {
 
-    const result = await pendingItems.find({"status":"APPROVED"})
-    console.log("RES", result)
+    const result = await pendingItems.find({"status":SITEMANAGER_APPROVE})
     return result
 }
 
 exports.getALlPendingItemsId = async (resID) => {
     const reuslt = await pendingItems.find({reqID:resID})
-    console.log("MYS", reuslt)
     return reuslt
 }
 
 exports.addReceivedItemsToInvoice = async (employeeName, data) => {
     const items = []
-        console.log("valuesa",data)
         const {reqID, itemDescription, itemPrice,itemQty, approvedUser} = data;
-
-        console.log("BODY ITEMS",reqID, itemDescription, itemPrice,itemQty)
         const OrderID = uuidv1();
         const  orderDetails = new invoice({
             OrderID,
@@ -173,6 +153,5 @@ exports.addReceivedItemsToInvoice = async (employeeName, data) => {
             employeeName
         });
         const result = await orderDetails.save().then(()=> {console.log("Success!")})
-        console.log("reuslt111", result);
         return result;
 }

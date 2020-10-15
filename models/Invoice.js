@@ -25,10 +25,7 @@ const Invoiceinfo = new Schema({
     employeeName:{
         type :String
     }
-    // ,
-    // managerApproval:{
-    //     type: String
-    // }
+
 });
 
 const InvoiceModel = mongoose.model('Invoice',Invoiceinfo);

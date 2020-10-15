@@ -1,6 +1,5 @@
 let invoice = require('../models/Invoice');
 
-
 exports.getInvoiceIds = async () => {
     const result = await invoice.find({}, {reqID:1})
     return result

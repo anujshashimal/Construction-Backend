@@ -4,7 +4,6 @@ const { v1: uuidv1 } = require('uuid');
 
 exports.saveOrderItems = async (body)=>{
     const {reqID, supplier, addressline1, addressline2, other, requiredDate, status} = body;
-    console.log("BODY ITEMS",reqID, supplier, addressline1, addressline2, other, requiredDate)
     const OrderID = uuidv1();
     const  orderDetails = new Order({
         OrderID,
@@ -17,19 +16,16 @@ exports.saveOrderItems = async (body)=>{
         status
     });
     const result = await orderDetails.save().then(()=> {console.log("Success!")})
-    console.log("reuslt", result);
     return result
 }
 
 exports.getPlaceOrderDetails = async (body) => {
     const {reqID} = body;
     const getDetails = await this.FINDReqIDExists(reqID);
-    console.log("GETDEA", getDetails)
     if(getDetails==null|| getDetails == undefined||getDetails.length==0){
         throw new Error("Unable to find Request ID");
     }
     const data = await this.FindReqIDItems(reqID)
-    console.log("GEEE", data)
     return data;
 
 }
@@ -45,7 +41,6 @@ exports.FindReqIDItems = async (reqID) => {
     let requestID = reqID;
     let itemsList = []
     const details = await AppOrPending.find({reqID: reqID})
-    console.log("details",details)
 
     details.forEach(data => itemsList.push(data));
     return itemsList;
@@ -55,7 +50,6 @@ function onlyUnique(value, index, self) {
 }
 
 exports.FindAllItemsReqIdByOrderCollection = async () => {
-    console.log("HEREE")
     let reqIDs =[];
     const dat = await Order.find({}, {reqID:1})
 
@@ -69,7 +63,6 @@ exports.FindAllItemsReqIdByOrderCollection = async () => {
 exports.managerSaveOrderItems = async (body)=>{
 
     const {reqID, supplier, addressline1, addressline2, other, requiredDate, status} = body;
-    console.log("BODY ITEMS",reqID, supplier, addressline1, addressline2, other, requiredDate)
     const OrderID = uuidv1();
     const  orderDetails = new Order({
         OrderID,
