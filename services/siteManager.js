@@ -59,23 +59,26 @@ exports.getSiteManagerApproval = async (body) => {
         empName = await userService.findEmployee(val.reqID)
     }
     const managerApprovedItems = await this.getTheStatus()
-    console.log("CHECK", managerApprovedItems.length)
+    const mana = await this.getTheSign()
+    console.log("CHECKK", mana.length)
     console.log("totalVal", reqID)
 
-    if(managerApprovedItems.length !== 0){
-        await ApprovedService.saveAppOrReq(empName, managerApprovedItems);
-        await ApprovedService.deletePendingItems(managerApprovedItems);
-        return SITEMANAGER_APPROVE
-    }
+    // if(managerApprovedItems.length !== 0 || mana.length !==0){
+    //     await ApprovedService.saveAppOrReq(empName, managerApprovedItems);
+    //     await ApprovedService.deletePendingItems(managerApprovedItems);
+    //     await ApprovedService.deleteFromItems(reqID);
+    //     return SITEMANAGER_APPROVE
+    // }
 
-    if(totalVal < 100000 ){
+
+    if(totalVal < 100000 || mana.length ===0){
         await ApprovedService.saveAppOrReq(empName, body);
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_APPROVE
     }else{
 
         await this.savePendingValue(reqID)
-        await ApprovedService.deleteFromApprovedItems(reqID)
+        // await ApprovedService.deleteFromApprovedItems(reqID)
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_PENDING
     }
@@ -118,12 +121,17 @@ exports.savePendingValue = async (reqID) => {
 }
 
 exports.getTheStatusOfPendingStatus = async (reqID, status) => {
+    console.log("aqwd")
 
     console.log(reqID, status)
     const idset = await this.getALlPendingItemsId(reqID)
     for (const data of idset) {
         if(data.reqID === reqID){
             const result = await pendingItems.updateMany({"reqID": reqID}, {"status": status})
+            const resw = await pendingItems.find({reqID: reqID})
+            console.log("wdqq",resw)
+            await ApprovedService.saveAppOrReqManager(resw)
+            const result12 = await pendingItems.deleteMany({reqID: reqID})
         }
     }
 }
@@ -134,8 +142,16 @@ exports.getTheStatus = async () => {
     return result
 }
 
+exports.getTheSign = async () => {
+    console.log("aefqqq")
+
+    const result = await items.find({"status":"SIGNED"})
+    console.log("aefqqq",result)
+    return result
+}
 exports.getALlPendingItemsId = async (resID) => {
     const reuslt = await pendingItems.find({reqID:resID})
+    console.log("MYSSS", reuslt)
     return reuslt
 }
 

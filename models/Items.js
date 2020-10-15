@@ -18,6 +18,9 @@ const Items = new Schema({
     Item_AgreedPrice:{
         type:String,
     },
+    ManagerSign:{
+        type:String
+    }
 
 
 });
