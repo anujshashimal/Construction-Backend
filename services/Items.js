@@ -14,7 +14,6 @@ exports.SaveItems = async (body)=>{
         Item_AgreedPrice
     });
     const result = await newCategory.save().then(()=> {console.log("Success!")})
-    console.log("adaw", result)
 }
 
 exports.getItemByUser = async (body) => {
@@ -32,7 +31,6 @@ exports.getAllByReqNumber = async () => {
     const dat = await Items.find({}, {ItemID:1})
     dat.forEach(data => items.push(data.ItemID))
   //  dat.forEach(data => {resIDs.push(data.userID)})
-    console.log("ITME", dat)
     return dat;
 }
 
@@ -41,7 +39,6 @@ exports.getAllItemsByReqNumber = async (body) => {
     let items = [];
     console.log(ItemID)
     items = await Items.find({"ItemID":ItemID})
-    console.log("temds", items)
     return items
 
 }
@@ -55,7 +52,6 @@ exports.getAllPendingReqItems = async () => {
 exports.getPendingItemByReqId = async (body) => {
     const {reqID} = body;
     let items = [];
-    console.log(reqID)
     items = await PendingItems.find({"reqID":reqID})
     return items
 
@@ -65,9 +61,7 @@ exports.getPendingItemByReqId = async (body) => {
 exports.deleteItemsWhenApproved = async (body) => {
     let result;
     let reqID;
-    console.log("MYbb",body)
     for (const data of body) {
-        console.log("wd", data.reqID)
         result = await Items.deleteMany({ItemID:data.reqID})
     }
     return result

@@ -5,14 +5,21 @@ let approvedItems = require('../models/AppOrPenRequest')
 const path = require('path');
 const nodemailer = require("nodemailer");
 const process = require('process');
+
+const {SupplierConst} = require('../Constants');
+const {
+    INDUSTRY_EMAIL,
+    INDUSTRY_PASSWORD
+} = SupplierConst
+
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 const ABSPATH = path.dirname(process.mainModule.filename)
 
 let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "sliitfashionwebapp@gmail.com",
-        pass: "sliit@123"
+        user: INDUSTRY_EMAIL,
+        pass: INDUSTRY_PASSWORD
     },
 });
 
@@ -34,12 +41,21 @@ exports.getSuppliersItems = async (body) => {
 exports.getSupplierEmail = async(supplier, reqID, body) => {
     let Supplieremail;
     let OrderInfo;
+    let Item_Description = [];
+    let Item_Quantity = [];
+    let Item_AgreedPrice = [];
+    let username;
     const getSupplierEmail = await Users.find({username:supplier})
     getSupplierEmail.forEach(data => {Supplieremail = data.email})
-    const orderInfo = await items.find({ItemID:reqID})
+    const orderInfo = await approvedItems.find({reqID:reqID})
 
     // console.log("Order Info", orderInfo[0].Item_Description)
-
+    orderInfo.forEach(data => {
+        Item_Description.push(data.itemDescription)
+        Item_Quantity.push(data.itemQty)
+        Item_AgreedPrice.push(data.itemPrice)
+        username = data.employeeName
+    })
     let sentinfo = {
         to: Supplieremail,
         subject: "Order is Pending",
@@ -49,11 +65,16 @@ exports.getSupplierEmail = async(supplier, reqID, body) => {
             ', </h1> <br /> <br />' + ' <img src="cid:Design01" style="width: 500px" /> ' + ' <br /> <br />' +
             '<p> You got a new order! Please deliver before the deadline  </p>' +
             '<h2> Order Details </h2>' + '</br>' +
-            '<h3> Name :' + 'Lahiru Lakruwan' + '</h3>' + '</br>' +
+            '<h3> Sitemanager Name :' + username + '</h3>' + '</br>' +
             '<h3> Address Line 1 :' + body.addressline1 + '</h3>' + '</br>' +
             '<h3> Address Line 2 :' + body.addressline2 + '</h3>' + '</br>' +
             '<h3> Address Line 3 :' + body.other + '</h3>' + '</br>' +
-            '<h3> Required Date' + body.requiredDate + '</h3>' + '</br>' +
+            '<h3> Required Date :' + body.requiredDate + '</h3>' + '</br>' +
+            '<h3> ***********  ORDERED ITEMS ********</h3>' +
+            `<h2>${Item_Description},</h2>` +
+            `<h2>${Item_Quantity},</h2>` +
+            `<h2>${Item_AgreedPrice},</h2>` +
+            '<h3> ************************************ </h3>' +
             '</form>',
         attachments: [{
             filename: 'Design01.png',

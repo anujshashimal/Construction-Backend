@@ -24,7 +24,6 @@ router.post('/getAllInfoBySupplierName', async (req, res) => {
         res.json(result)
     }catch (e) {
         res.send({description:e.message})
-
     }
 })
 router.post('/getAllItemsBySupplierName', async (req, res) => {
@@ -35,7 +34,6 @@ router.post('/getAllItemsBySupplierName', async (req, res) => {
         res.json({result})
     }catch (e) {
         res.send({description:e.message})
-
     }
 })
 
@@ -47,7 +45,6 @@ router.post('/getInfo', async (req, res) => {
         res.json(result)
     }catch (e) {
         res.send({description:e.message})
-
     }
 })
 

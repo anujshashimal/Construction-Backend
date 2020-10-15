@@ -1,0 +1,6 @@
+module.exports ={
+    SITEMANAGER_APPROVE :"APPROVE",
+    SITEMANAGER_PENDING :"PENDING",
+    SITEMANAGER_DECLINE :"deleted",
+
+}

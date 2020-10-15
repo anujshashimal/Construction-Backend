@@ -10,14 +10,12 @@ router.get('/getInvoiceIds',  async(req, res) => {
         res.json(result)
     }catch (e) {
         res.send({description:e.message})
-
     }
 })
 
 router.post('/getInvoiceInfoById',  async(req, res) => {
     try{
         const body = req.body
-        console.log("adq", body)
         const result = await invoice.getInviceInfo(body)
         if(result.length === 0 || result === undefined)
             res.send({result:"EMPTY"})

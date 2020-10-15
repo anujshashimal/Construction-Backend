@@ -53,7 +53,6 @@ router.post('/getItemsByReqNumbers', async (req, res) => {
 
 })
 
-
 //get all pending requesting number list
 router.get('/getAllPendingReqNumberList', async( req, res) => {
     try{

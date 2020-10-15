@@ -18,7 +18,6 @@ router.post('/userLogin', async( req, res) => {
     try{
         const body = req.body;
         const users = await user.LoginUser(body);
-        console.log("USERRR", users);
         res.json(users);
     }catch (e){
         res.send({description:e.message})
