@@ -1,5 +1,6 @@
 let AppOrPending = require('../models/AppOrPenRequest');
 let PendingItems = require('../models/PendingItems');
+let items = require('../models/Items');
 
 exports.saveAppOrReq = async (empName, body)=>{
     console.log("BOD",body)
@@ -63,11 +64,49 @@ exports.deletePendingItems = async (body) => {
     return result
 }
 
-exports.deleteFromApprovedItems = async (body) => {
+exports.deleteFromItems = async (reqID) => {
     let result;
-    let reqID;
-    for (const data of body) {
-        result = await AppOrPending.findOneAndDelete({"reqID": data.reqID, "status":"APPROVED"})
-    }
+        result = await items.deleteMany({"reqID": reqID})
+
     return result
+}
+// exports.deleteFromApprovedItems = async (body) => {
+//     let result;
+//     let reqID;
+//     for (const data of body) {
+//         result = await AppOrPending.findOneAndDelete({"reqID": data.reqID, "status":"APPROVED"})
+//     }
+//     return result
+// }
+
+exports.saveAppOrReqManager = async (body)=>{
+    console.log("BOD",body)
+    let ItemID, Item_Description,Item_AgreedPrice,Item_Quantity, status,approvedUser,employeeName,ManagerSign;
+
+        for (const data of body) {
+
+            let arr = []
+                ItemID = data.reqID,
+                Item_Description = data.itemDescription,
+                Item_AgreedPrice = data.itemPrice,
+                Item_Quantity = data.itemQty,
+                ManagerSign = "SIGNED"
+                //approvedUser = data.username
+                // employeeName = empName
+          //  console.log("HH", reqID, itemDescription, itemPrice, itemQty)
+
+            const coll = new items({
+                ItemID,
+                Item_Description,
+                Item_AgreedPrice,
+                Item_Quantity,
+                ManagerSign,
+                //approvedUser,
+                // employeeName
+            })
+            const result = await coll.save().then(() => {
+                console.log("Success!")
+            })
+        }
+
 }

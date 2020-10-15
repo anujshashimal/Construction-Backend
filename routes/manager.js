@@ -22,6 +22,8 @@ router.post('/declineRequest', async (req, res) => {
 //update the status
 router.post('/approval', async(req, res) => {
     try{
+        const body = req.body
+        console.log(body)
         const {reqID, status} = req.body
         await siteManager.getTheStatusOfPendingStatus(reqID, status)
         res.json({reuslt:"Items Approved"})
