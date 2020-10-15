@@ -4,6 +4,9 @@ let pendingItems = require('../models/PendingItems');
 let invoice = require('../models/Invoice');
 let items = require('../models/Items');
 let ApprovedService = require('../services/ApproveOrPending');
+let itemsService = require('../services/Items');
+let userService = require('../services/user');
+
 const { v1: uuidv1 } = require('uuid');
 
 exports.getAllSiteManagers = async(userType) => {
@@ -49,28 +52,45 @@ exports.getSiteManagerApproval = async (body) => {
     let Price, Qty;
     let totalVal = 0;
     let reqID;
-    body.forEach(val => {
+    let empName;
+    console.log("wdqq")
+    for (const val of body) {
         totalVal = totalVal + (val.itemPrice * val.itemQty)
         reqID = val.reqID
-    })
+        console.log("wdqq")
 
+        empName = await userService.findEmployee(val.reqID)
+
+    }
     const managerApprovedItems = await this.getTheStatus()
-    console.log("CHECK", managerApprovedItems)
+    console.log("CHECK", managerApprovedItems.length)
     console.log("totalVal", reqID)
-    if(totalVal < 100000 ){
-        await ApprovedService.saveAppOrReq(body);
-        await ApprovedService.saveAppOrReq(managerApprovedItems);
+
+    if(managerApprovedItems.length !== 0){
+        await ApprovedService.saveAppOrReq(empName, managerApprovedItems);
         await ApprovedService.deletePendingItems(managerApprovedItems);
+        return "APPROVE"
+
+    }
+
+    if(totalVal < 100000 ){
+        await ApprovedService.saveAppOrReq(empName, body);
+        await itemsService.deleteItemsWhenApproved(body)
+
         return "APPROVE"
     }else{
         console.log("TOTAL", reqID)
         await this.savePendingValue(reqID)
+        await ApprovedService.deleteFromApprovedItems(reqID)
+        await itemsService.deleteItemsWhenApproved(body)
         return "PENDING"
     }
 }
 
 exports.deleteItemsWhenReceived = async (body) => {
     let reqIDs = body.reqID
+    let employeeName;
+    employeeName = await userService.findEmployee( body.reqID)
 
     let {reqID, itemDescription} = body
     console.log("awdww",reqID, itemDescription)
@@ -81,7 +101,7 @@ exports.deleteItemsWhenReceived = async (body) => {
         for(const da of itemDescription){
             if(da === data.itemDescription){
                 console.log("RESSSS",data)
-                const invoiceitm = await this.addReceivedItemsToInvoice(data)
+                const invoiceitm = await this.addReceivedItemsToInvoice(employeeName, data)
                 result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
             }
         }
@@ -136,10 +156,11 @@ exports.getALlPendingItemsId = async (resID) => {
     return reuslt
 }
 
-exports.addReceivedItemsToInvoice = async (data) => {
+exports.addReceivedItemsToInvoice = async (employeeName, data) => {
     const items = []
+        console.log("valuesa",data)
+        const {reqID, itemDescription, itemPrice,itemQty, approvedUser} = data;
 
-        const {reqID, itemDescription, itemPrice,itemQty} = data;
         console.log("BODY ITEMS",reqID, itemDescription, itemPrice,itemQty)
         const OrderID = uuidv1();
         const  orderDetails = new invoice({
@@ -147,12 +168,11 @@ exports.addReceivedItemsToInvoice = async (data) => {
             reqID,
             itemDescription,
             itemPrice,
-            itemQty
+            itemQty,
+            approvedUser,
+            employeeName
         });
         const result = await orderDetails.save().then(()=> {console.log("Success!")})
         console.log("reuslt111", result);
         return result;
-
-
-
 }

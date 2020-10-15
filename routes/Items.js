@@ -34,7 +34,9 @@ router.get('/health', async( req, res) => {
 router.get('/getRequestingNumberList', async( req, res) => {
     try{
         const reqIDs = await items.getAllByReqNumber();
+
         res.json(reqIDs);
+
     }catch (e){
         res.send({description:e.message})
     }

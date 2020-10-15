@@ -17,10 +17,33 @@ router.get('/getSuppliers', async( req, res) => {
     }
 })
 
-router.post('/getAllItemsBySupplierID', async (req, res) => {
+router.post('/getAllInfoBySupplierName', async (req, res) => {
     try{
         const reqID = req.body
         const result = await supplier.getSuppliersItems(reqID)
+        res.json(result)
+    }catch (e) {
+        res.send({description:e.message})
+
+    }
+})
+router.post('/getAllItemsBySupplierName', async (req, res) => {
+    try{
+        const {username} = req.body
+        console.log(username)
+        const result = await supplier.getSupplierItemsByName(username)
+        res.json(result)
+    }catch (e) {
+        res.send({description:e.message})
+
+    }
+})
+
+router.post('/getInfo', async (req, res) => {
+    try{
+        const {reqID} = req.body
+        console.log("sefw")
+        const result = await supplier.getItemsBySupplierReqIds(reqID)
         res.json(result)
     }catch (e) {
         res.send({description:e.message})

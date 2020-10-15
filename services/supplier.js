@@ -1,6 +1,7 @@
 let Users = require('../models/user');
 let Orders = require('../models/Order');
 let items = require('../models/Items');
+let approvedItems = require('../models/AppOrPenRequest')
 const path = require('path');
 const nodemailer = require("nodemailer");
 const process = require('process');
@@ -67,4 +68,33 @@ exports.getSupplierEmail = async(supplier, reqID, body) => {
             console.error("SENT ");
         }
     })
+}
+exports.getSupplierItemsByName = async (username) => {
+    let ids = [];
+    let uniqueArray = [];
+
+    const data = await Orders.find({supplier: username})
+    data.forEach(item => {
+        ids.push(item.reqID)
+    })
+    uniqueArray = ids.filter(function(item, pos) {
+        return ids.indexOf(item) == pos;
+    })
+
+    return uniqueArray
+}
+
+exports.getItemsBySupplierReqIds = async (reqID) => {
+    let ids = [];
+    let uniqueArray = [];
+    console.log("data")
+
+    const data = await approvedItems.find({reqID: reqID})
+    console.log("data", data)
+    data.forEach(item => {
+        ids.push(item.reqID)
+    })
+
+
+    return data
 }

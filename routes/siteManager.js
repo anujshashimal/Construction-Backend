@@ -85,7 +85,7 @@ router.post('/placeorders', async(req, res) => {
         const body = req.body
         await order.saveOrderItems(body)
         await supplier.getSupplierEmail(body.supplier, body.reqID, body);
-        res.json({reuslt:"Saved Order details in the DB"})
+        res.json({result:"Saved Order details in the DB"})
     }catch (e) {
         res.send({description:e.message})
     }
