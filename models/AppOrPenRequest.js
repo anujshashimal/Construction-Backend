@@ -17,7 +17,17 @@ const ApprovedItems = new Schema({
         },
         status:{
             type:String
+        },
+        approvedUser:{
+            type :String
+        },
+        employeeName:{
+        type :String
         }
+        // ,
+        // managerApproval:{
+        //     type: String
+        // }
 
 });
 

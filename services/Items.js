@@ -28,8 +28,11 @@ exports.getItemByUser = async (body) => {
 }
 
 exports.getAllByReqNumber = async () => {
+    let items = []
     const dat = await Items.find({}, {ItemID:1})
+    dat.forEach(data => items.push(data.ItemID))
   //  dat.forEach(data => {resIDs.push(data.userID)})
+    console.log("ITME", dat)
     return dat;
 }
 
@@ -56,4 +59,16 @@ exports.getPendingItemByReqId = async (body) => {
     items = await PendingItems.find({"reqID":reqID})
     return items
 
+}
+
+
+exports.deleteItemsWhenApproved = async (body) => {
+    let result;
+    let reqID;
+    console.log("MYbb",body)
+    for (const data of body) {
+        console.log("wd", data.reqID)
+        result = await Items.deleteMany({ItemID:data.reqID})
+    }
+    return result
 }

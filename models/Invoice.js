@@ -18,7 +18,17 @@ const Invoiceinfo = new Schema({
     },
     itemQty: {
         type: String,
+    },
+    approvedUser:{
+        type: String,
+    },
+    employeeName:{
+        type :String
     }
+    // ,
+    // managerApproval:{
+    //     type: String
+    // }
 });
 
 const InvoiceModel = mongoose.model('Invoice',Invoiceinfo);

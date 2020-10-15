@@ -14,14 +14,12 @@ exports.RegisterUsers = async (body)=>{
     const usernmeExits = await this.FindUser(username);
     console.log(usernmeExits)
     if(usernmeExits.length == 0){
-        if(userType === "sitemanager"|| userType === "employee" || userType ==="supplier"){
+        if(userType === "sitemanager"|| userType === "employee" || userType ==="supplier" || userType === "manager"){
             const result = await userDetails.save();
             return result
         }else{
             throw new Error("Username Type is invlaid")
-
         }
-
     }
     throw new Error("Username already exists!")
 
@@ -42,4 +40,9 @@ exports.FindUser = async (username) =>{
     const dat = await Users.find({username: username})
     dat.forEach(data => usernameList.push(data.username));
     return usernameList;
+}
+exports.findEmployee = async (reqID) => {
+    console.log("eqqq")
+    const data = await Users.find({userID:reqID})
+    return data[0].username
 }

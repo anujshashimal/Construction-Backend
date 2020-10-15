@@ -1,16 +1,18 @@
 let AppOrPending = require('../models/AppOrPenRequest');
 let PendingItems = require('../models/PendingItems');
 
-exports.saveAppOrReq = async (body)=>{
+exports.saveAppOrReq = async (empName, body)=>{
     console.log("BOD",body)
     let arr = []
-    let reqID, itemDescription,itemPrice,itemQty, status;
+    let reqID, itemDescription,itemPrice,itemQty, status,approvedUser,employeeName;
      for (const data of body) {
             reqID = data.reqID,
             itemDescription = data.itemDescription,
             itemPrice = data.itemPrice,
             itemQty= data.itemQty
             status = "APPROVED",
+            approvedUser = data.username
+            employeeName = empName
             console.log("HH", reqID, itemDescription,itemPrice,itemQty)
 
         const coll = new AppOrPending({
@@ -18,7 +20,9 @@ exports.saveAppOrReq = async (body)=>{
             itemDescription,
             itemPrice,
             itemQty,
-            status
+            status,
+            approvedUser,
+            employeeName
         })
 
         const result = await coll.save().then(()=> {console.log("Success!")})
@@ -60,10 +64,17 @@ exports.deletePendingItems = async (body) => {
     let reqID;
     console.log("MY",body)
     for (const data of body) {
-
                 result = await PendingItems.findOneAndDelete({"reqID": data.reqID, "status":"APPROVED"})
-
     }
     return result
+}
 
+exports.deleteFromApprovedItems = async (body) => {
+    let result;
+    let reqID;
+    console.log("MY",body)
+    for (const data of body) {
+        result = await AppOrPending.findOneAndDelete({"reqID": data.reqID, "status":"APPROVED"})
+    }
+    return result
 }
