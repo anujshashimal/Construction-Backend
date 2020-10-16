@@ -70,12 +70,35 @@ router.get('/getPendingOrderListIds', async (req, res) => {
     }
 })
 
-router.get('/getDeliveredItems', async(req, res) => {
+// router.get('/getDeliveredItems', async(req, res) => {
+//     try{
+//         const result = await supplier.getDeliveredOrderListIds()
+//         res.json(result)
+//     }catch (e) {
+//         res.send({description:e.message})
+//     }
+// })
+
+router.post('/getPendingItems', async (req, res) => {
     try{
-        const result = await supplier.getDeliveredOrderListIds()
+        console.log(req.body)
+        const {reqID} = req.body
+        const result = await supplier.getPendingOrderInfoyIds(reqID)
         res.json(result)
     }catch (e) {
         res.send({description:e.message})
     }
 })
+
+router.post('/getDeliveredItems', async (req, res) => {
+    try{
+        console.log(req.body)
+        const {reqID} = req.body
+        const result = await supplier.getDeliveredOrderInfoyIds(reqID)
+        res.json(result)
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
+
 module.exports=router;
