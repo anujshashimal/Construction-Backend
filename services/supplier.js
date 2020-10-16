@@ -264,6 +264,15 @@ exports.getPendingOrderInfoyIds = async (reqID) => {
 
     return result
 }
+
+exports.getDeliveredOrderIds = async (reqID) => {
+
+    const result = await SupplierPending.find({reqID:reqID,status:"DELIVERED"})
+
+
+    return result
+}
+
 exports.getDeliveredOrderInfoyIds = async () => {
 
     let reqIds = []
