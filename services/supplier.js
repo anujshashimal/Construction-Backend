@@ -168,7 +168,7 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
 
             const data = await supplierItems.find({reqID: reqID[0], itemDescription: obj})
             const val = await this.saveSupplierPendingValue(data);
-            await SupplierPending.updateMany({reqID:reqID[0],itemDescription: obj}, {status:"DELIVERED"})
+            await SupplierPending.updateMany({reqID:reqID[0],itemDescription: obj}, {status:"WAITING"})
             await supplierItems.deleteMany({itemDescription: obj})
 
             data.forEach(item => {
