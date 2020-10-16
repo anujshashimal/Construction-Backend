@@ -36,8 +36,8 @@ exports.saveItemsInSupplierTable = async (empName, body)=>{
             itemDescription = data.itemDescription,
             itemPrice = data.itemPrice,
             itemQty= data.itemQty
-            status = "APPROVED",
-            approvedUser = data.username
+            status = "WAITING",
+            approvedUser = data.username,
             employeeName = empName
         console.log("HH", reqID, itemDescription,itemPrice,itemQty)
 

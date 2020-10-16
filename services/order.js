@@ -1,9 +1,12 @@
 const Order = require('../models/Order');
 let AppOrPending = require('../models/AppOrPenRequest');
 let SupplierItems = require('../models/SupplierItems');
+let supplierService = require('./supplier');
+
 const { v1: uuidv1 } = require('uuid');
 
 exports.saveOrderItems = async (body)=>{
+    try{
     const {reqID, supplier, addressline1, addressline2, other, requiredDate, status} = body;
     const OrderID = uuidv1();
     const  orderDetails = new Order({
@@ -19,6 +22,9 @@ exports.saveOrderItems = async (body)=>{
     const result = await orderDetails.save().then(()=> {console.log("Success!")});
     await SupplierItems.updateMany({reqID:reqID},{ supplierName:supplier, addressline1:addressline1, addressline2:addressline2, other:other, requiredDate:requiredDate})
     return result
+    }catch (e) {
+        console.log(e)
+    }
 }
 
 exports.getPlaceOrderDetails = async (body) => {
