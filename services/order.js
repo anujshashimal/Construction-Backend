@@ -17,7 +17,7 @@ exports.saveOrderItems = async (body)=>{
         status
     });
     const result = await orderDetails.save().then(()=> {console.log("Success!")});
-    await SupplierItems.update({reqID:reqID},{ supplierName:supplier, addressline1:addressline1, addressline2:addressline2, other:other, requiredDate:requiredDate}, {multi: true})
+    await SupplierItems.updateMany({reqID:reqID},{ supplierName:supplier, addressline1:addressline1, addressline2:addressline2, other:other, requiredDate:requiredDate})
     return result
 }
 

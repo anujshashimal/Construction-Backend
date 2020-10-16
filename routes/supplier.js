@@ -61,10 +61,9 @@ router.post('/getSelectedInfo', async (req, res) => {
     }
 })
 
-router.post('/getPendingOrderList', async (req, res) => {
+router.get('/getPendingOrderListIds', async (req, res) => {
     try{
-    const {reqID} = req.body
-    const result = await supplier.getPendingOrderList(reqID)
+    const result = await supplier.getPendingOrderListIds()
     res.json(result)
     }catch (e) {
         res.send({description:e.message})
