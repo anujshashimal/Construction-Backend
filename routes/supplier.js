@@ -90,7 +90,7 @@ router.post('/getPendingItems', async (req, res) => {
     }
 })
 
-router.get('/getDeliveredItems', async (req, res) => {
+router.get('/getAllDeliveredItemsId', async (req, res) => {
     try{
         // console.log(req.body)
         // const {reqID} = req.body
