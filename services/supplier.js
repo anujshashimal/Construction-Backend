@@ -265,11 +265,19 @@ exports.getPendingOrderInfoyIds = async (reqID) => {
     return result
 }
 exports.getDeliveredOrderInfoyIds = async () => {
+
     let reqIds = []
     let uniqueArray = [];
 
     const result = await SupplierPending.find({status:"DELIVERED"})
 
+    result.forEach(data => {
+        reqIds.push(data.reqID)
+    })
 
-    return result
+    uniqueArray = reqIds.filter(function(item, pos) {
+        return reqIds.indexOf(item) == pos;
+    })
+    return {result:uniqueArray}
+
 }
