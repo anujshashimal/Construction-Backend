@@ -41,5 +41,6 @@ exports.FindUser = async (username) =>{
 }
 exports.findEmployee = async (reqID) => {
     const data = await Users.find({userID:reqID})
+    console.log(data)
     return data[0].username
 }
