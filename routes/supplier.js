@@ -90,11 +90,11 @@ router.post('/getPendingItems', async (req, res) => {
     }
 })
 
-router.post('/getDeliveredItems', async (req, res) => {
+router.get('/getDeliveredItems', async (req, res) => {
     try{
-        console.log(req.body)
-        const {reqID} = req.body
-        const result = await supplier.getDeliveredOrderInfoyIds(reqID)
+        // console.log(req.body)
+        // const {reqID} = req.body
+        const result = await supplier.getDeliveredOrderInfoyIds()
         res.json(result)
     }catch (e) {
         res.send({description:e.message})
