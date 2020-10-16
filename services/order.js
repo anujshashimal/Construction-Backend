@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 let AppOrPending = require('../models/AppOrPenRequest');
+let SupplierItems = require('../models/SupplierItems');
 const { v1: uuidv1 } = require('uuid');
 
 exports.saveOrderItems = async (body)=>{
@@ -15,7 +16,8 @@ exports.saveOrderItems = async (body)=>{
         requiredDate,
         status
     });
-    const result = await orderDetails.save().then(()=> {console.log("Success!")})
+    const result = await orderDetails.save().then(()=> {console.log("Success!")});
+    await SupplierItems.update({reqID:reqID},{ supplierName:supplier, addressline1:addressline1, addressline2:addressline2, other:other, requiredDate:requiredDate}, {multi: true})
     return result
 }
 

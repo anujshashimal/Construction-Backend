@@ -26,6 +26,7 @@ router.post('/getAllInfoBySupplierName', async (req, res) => {
         res.send({description:e.message})
     }
 })
+
 router.post('/getAllItemsBySupplierName', async (req, res) => {
     try{
         const {username} = req.body
@@ -41,6 +42,7 @@ router.post('/getInfo', async (req, res) => {
     try{
         const {reqID} = req.body
         console.log("sefw")
+
         const result = await supplier.getItemsBySupplierReqIds(reqID)
         res.json(result)
     }catch (e) {
@@ -48,5 +50,25 @@ router.post('/getInfo', async (req, res) => {
     }
 })
 
+router.post('/getSelectedInfo', async (req, res) => {
+    try{
+        console.log(req.body)
+        const {itemDescription,reqID} = req.body
+        const result = await supplier.getSelectedItemsBySupplierReqIds(itemDescription,reqID)
+        res.json(result)
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
+
+router.post('/getPendingOrderList', async (req, res) => {
+    try{
+    const {reqID} = req.body
+    const result = await supplier.getPendingOrderList(reqID)
+    res.json(result)
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
 
 module.exports=router;

@@ -1,7 +1,10 @@
 let Users = require('../models/user');
 let Orders = require('../models/Order');
 let items = require('../models/Items');
-let approvedItems = require('../models/AppOrPenRequest')
+let approvedItems = require('../models/AppOrPenRequest');
+let SupplierPending = require('../models/SupplierPending');
+let supplierItems = require('../models/SupplierItems');
+
 const path = require('path');
 const nodemailer = require("nodemailer");
 const process = require('process');
@@ -11,7 +14,6 @@ const {
     INDUSTRY_EMAIL,
     INDUSTRY_PASSWORD
 } = SupplierConst
-
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 const ABSPATH = path.dirname(process.mainModule.filename)
 
@@ -22,6 +24,33 @@ let transporter = nodemailer.createTransport({
         pass: INDUSTRY_PASSWORD
     },
 });
+
+exports.saveItemsInSupplierTable = async (empName, body)=>{
+    console.log("BOD",body)
+    let arr = []
+    let reqID, itemDescription,itemPrice,itemQty, status,approvedUser,employeeName;
+    for (const data of body) {
+            reqID = data.reqID,
+            itemDescription = data.itemDescription,
+            itemPrice = data.itemPrice,
+            itemQty= data.itemQty
+            status = "APPROVED",
+            approvedUser = data.username
+            employeeName = empName
+        console.log("HH", reqID, itemDescription,itemPrice,itemQty)
+
+        const coll = new supplierItems({
+            reqID,
+            itemDescription,
+            itemPrice,
+            itemQty,
+            status,
+            approvedUser,
+            employeeName
+        })
+        const result = await coll.save().then(()=> {console.log("Success!")})
+    }
+}
 
 exports.getAllSuppliers = async(userType) => {
     const dat = await Users.find({userType: userType})
@@ -109,13 +138,62 @@ exports.getItemsBySupplierReqIds = async (reqID) => {
     let ids = [];
     let uniqueArray = [];
     console.log("data")
+    let addressLine1, addressLine2, requiredDate, approvedUser;
 
-    const data = await approvedItems.find({reqID: reqID})
+
+    const data = await supplierItems.find({reqID: reqID})
     console.log("data", data)
+    data.forEach(item => {
+        addressLine1 = item.addressline1,
+            addressLine2 = item.addressLine2,
+            requiredDate = item.requiredDate,
+            approvedUser = item.approvedUser
+
+    })
+
+    return data
+}
+
+exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
+    try{
+    let ids = [];
+    let uniqueArray = [];
+    // const orderInfo = await Orders.find({reqID:reqID})
+    const data = await approvedItems.find({reqID: reqID, itemDescription:itemDescription})
+    const val = await this.saveSupplierPendingValue(data);
+
+    console.log("data", val)
     data.forEach(item => {
         ids.push(item.reqID)
     })
-
-
     return data
+
+    }catch (e) {
+        console.log("Error",e)
+    }
+}
+
+exports.saveSupplierPendingValue = async (data) => {
+    console.log("adw", data)
+    let result;
+    for (const item of data) {
+    const {reqID, itemDescription, itemPrice,itemQty, approvedUser} = item;
+    const  orderDetails = new SupplierPending({
+        // OrderID,
+        reqID,
+        itemDescription,
+        itemPrice,
+        itemQty,
+        approvedUser,
+    });
+    result = await orderDetails.save().then(()=> {console.log("Success!")})
+    }
+
+    return result;
+}
+exports.getPendingOrderList = async (reqID) => {
+
+    const result = await SupplierPending.find({reqID: reqID})
+    console.log(result)
+    return result
 }
