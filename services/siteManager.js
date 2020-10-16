@@ -52,14 +52,15 @@ exports.getProductByID = async (userID) =>{
 exports.getSiteManagerApproval = async (body) => {
     let Price, Qty,reqID,empName;
     let totalVal = 0;
-
+    console.log("EEE1")
     for (const val of body) {
         totalVal = totalVal + (val.itemPrice * val.itemQty)
         reqID = val.reqID
         empName = await userService.findEmployee(val.reqID)
     }
-    const managerApprovedItems = await this.getTheStatus()
-    const mana = await this.getTheSign()
+    // const managerApprovedItems = await this.getTheStatus()
+    console.log("EEE2")
+    const mana = await this.getTheSign(reqID)
     console.log("CHECKK", mana.length)
     console.log("totalVal", reqID)
 
@@ -70,8 +71,12 @@ exports.getSiteManagerApproval = async (body) => {
     //     return SITEMANAGER_APPROVE
     // }
 
-
-    if(totalVal < 100000 || mana.length ===0){
+    if(mana.length !==0){
+        await ApprovedService.saveAppOrReq(empName, body);
+        await itemsService.deleteItemsWhenApproved(body)
+        return SITEMANAGER_APPROVE
+    }
+    if(totalVal < 100000 ){
         await ApprovedService.saveAppOrReq(empName, body);
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_APPROVE
@@ -142,10 +147,10 @@ exports.getTheStatus = async () => {
     return result
 }
 
-exports.getTheSign = async () => {
-    console.log("aefqqq")
+exports.getTheSign = async (reqID) => {
+    console.log("reqID", reqID)
 
-    const result = await items.find({"status":"SIGNED"})
+    const result = await items.find({ItemID:reqID,ManagerSign:"SIGNED"})
     console.log("aefqqq",result)
     return result
 }
