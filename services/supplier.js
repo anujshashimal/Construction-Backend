@@ -161,14 +161,21 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
     let ids = [];
     let uniqueArray = [];
     // const orderInfo = await Orders.find({reqID:reqID})
-    const data = await supplierItems.find({reqID: reqID, itemDescription:itemDescription})
-    const val = await this.saveSupplierPendingValue(data);
-    await supplierItems.deleteMany({reqID:reqID}, {itemDescription:itemDescription})
 
-    data.forEach(item => {
-        ids.push(item.reqID)
-    })
-    return data
+        for (var i = 0; i < itemDescription.length; i++) {
+            var obj = itemDescription[i]
+            console.log("desssffffffff", obj);
+
+            const data = await supplierItems.find({reqID: reqID[0], itemDescription: obj})
+            const val = await this.saveSupplierPendingValue(data);
+            await SupplierPending.updateMany({reqID:reqID[0],itemDescription: obj}, {status:"DELIVERED"})
+            await supplierItems.deleteMany({itemDescription: obj})
+
+            data.forEach(item => {
+                ids.push(item.reqID)
+            })
+        }
+        return ids;
 
     }catch (e) {
         console.log("Error",e)
@@ -246,4 +253,23 @@ exports.getDeliveredOrderListIds = async () => {
         return reqIds.indexOf(item) == pos;
     })
     return {result:uniqueArray}
+}
+
+exports.getPendingOrderInfoyIds = async (reqID) => {
+    let reqIds = []
+    let uniqueArray = [];
+
+    const result = await SupplierPending.find({reqID:reqID,status:"WAITING"})
+
+
+    return result
+}
+exports.getDeliveredOrderInfoyIds = async (reqID) => {
+    let reqIds = []
+    let uniqueArray = [];
+
+    const result = await SupplierPending.find({reqID:reqID,status:"DELIVERED"})
+
+
+    return result
 }
