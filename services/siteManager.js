@@ -57,9 +57,11 @@ exports.getProductByID = async (userID) =>{
 }
 
 exports.getSiteManagerApproval = async (body) => {
+    try{
     let Price, Qty,reqID,empName;
     let totalVal = 0;
     console.log("EEE1")
+
     for (const val of body) {
         totalVal = totalVal + (val.itemPrice * val.itemQty)
         reqID = val.reqID
@@ -86,6 +88,9 @@ exports.getSiteManagerApproval = async (body) => {
         await this.savePendingValue(reqID)
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_PENDING
+    }
+    }catch (e) {
+        console.log("ERROR",e)
     }
 }
 
