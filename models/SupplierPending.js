@@ -17,8 +17,28 @@ const SupplierPending = new Schema({
     },
     status:{
         type:String
-    }
-
+    },
+    approvedUser:{
+        type :String
+    },
+    employeeName: {
+        type: String
+    },
+    supplierName:{
+        type :String
+    },
+    addressline1:{
+        type:String,
+    },
+    addressline2:{
+        type:String,
+    },
+    other:{
+        type:String,
+    },
+    requiredDate:{
+        type:String,
+    },
 });
 
 const SupplierPendingModel = mongoose.model('SupplierPendingItems',SupplierPending);

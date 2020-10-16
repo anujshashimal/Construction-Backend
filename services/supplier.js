@@ -14,7 +14,9 @@ const {
     INDUSTRY_EMAIL,
     INDUSTRY_PASSWORD
 } = SupplierConst
+
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+
 const ABSPATH = path.dirname(process.mainModule.filename)
 
 let transporter = nodemailer.createTransport({
@@ -159,10 +161,10 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
     let ids = [];
     let uniqueArray = [];
     // const orderInfo = await Orders.find({reqID:reqID})
-    const data = await approvedItems.find({reqID: reqID, itemDescription:itemDescription})
+    const data = await supplierItems.find({reqID: reqID, itemDescription:itemDescription})
     const val = await this.saveSupplierPendingValue(data);
+    await supplierItems.deleteMany({reqID:reqID}, {itemDescription:itemDescription})
 
-    console.log("data", val)
     data.forEach(item => {
         ids.push(item.reqID)
     })
@@ -176,8 +178,9 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
 exports.saveSupplierPendingValue = async (data) => {
     console.log("adw", data)
     let result;
+    try{
     for (const item of data) {
-    const {reqID, itemDescription, itemPrice,itemQty, approvedUser} = item;
+    const {reqID, itemDescription, itemPrice,itemQty, approvedUser, addressline1, addressline2, other, requiredDate} = item;
     const  orderDetails = new SupplierPending({
         // OrderID,
         reqID,
@@ -185,15 +188,44 @@ exports.saveSupplierPendingValue = async (data) => {
         itemPrice,
         itemQty,
         approvedUser,
+        addressline1,
+        addressline2,
+        other,
+        requiredDate
     });
-    result = await orderDetails.save().then(()=> {console.log("Success!")})
+        result = await orderDetails.save().then(()=> {console.log("Success!")})
     }
 
     return result;
-}
+    }catch (e) {
+        console.log("Error", e)
+    }
+    }
 exports.getPendingOrderList = async (reqID) => {
-
+    let uniqueArr = [];
     const result = await SupplierPending.find({reqID: reqID})
     console.log(result)
+
+    uniqueArray = result.filter(function(item, pos) {
+        return result.indexOf(item) == pos;
+    })
+
     return result
+}
+
+exports.getPendingOrderListIds = async () => {
+    let reqIds = []
+    let uniqueArray = [];
+
+    const result = await SupplierPending.find({}, {reqID:1})
+
+    result.forEach(data => {
+        reqIds.push(data.reqID)
+    })
+
+    uniqueArray = reqIds.filter(function(item, pos) {
+        return reqIds.indexOf(item) == pos;
+    })
+    return {result:uniqueArray}
+
 }
