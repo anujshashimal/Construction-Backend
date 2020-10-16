@@ -178,6 +178,7 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
 exports.saveSupplierPendingValue = async (data) => {
     console.log("adw", data)
     let result;
+    let status = "WAITING"
     try{
     for (const item of data) {
     const {reqID, itemDescription, itemPrice,itemQty, approvedUser, addressline1, addressline2, other, requiredDate} = item;
@@ -191,7 +192,8 @@ exports.saveSupplierPendingValue = async (data) => {
         addressline1,
         addressline2,
         other,
-        requiredDate
+        requiredDate,
+        status
     });
         result = await orderDetails.save().then(()=> {console.log("Success!")})
     }
@@ -217,7 +219,7 @@ exports.getPendingOrderListIds = async () => {
     let reqIds = []
     let uniqueArray = [];
 
-    const result = await SupplierPending.find({}, {reqID:1})
+    const result = await SupplierPending.find({status:"WAITING"})
 
     result.forEach(data => {
         reqIds.push(data.reqID)
@@ -228,4 +230,20 @@ exports.getPendingOrderListIds = async () => {
     })
     return {result:uniqueArray}
 
+}
+
+exports.getDeliveredOrderListIds = async () => {
+    let reqIds = []
+    let uniqueArray = [];
+
+    const result = await SupplierPending.find({status:"DELIVERED"})
+
+    result.forEach(data => {
+        reqIds.push(data.reqID)
+    })
+
+    uniqueArray = reqIds.filter(function(item, pos) {
+        return reqIds.indexOf(item) == pos;
+    })
+    return {result:uniqueArray}
 }
