@@ -4,6 +4,7 @@ let pendingItems = require('../models/PendingItems');
 let invoice = require('../models/Invoice');
 let items = require('../models/Items');
 let supplierItems = require('../models/SupplierItems');
+let supplierPending = require('../models/SupplierPending');
 
 let ApprovedService = require('../services/ApproveOrPending');
 let itemsService = require('../services/Items');
@@ -108,7 +109,9 @@ exports.deleteItemsWhenReceived = async (body) => {
             if(da === data.itemDescription){
                 const invoiceInfo = await this.addReceivedItemsToInvoice(employeeName, data)
                 result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
-                await supplierItems.updateMany({reqID:reqID}, {status:"DELIVERED"})
+                // await supplierItems.updateMany({reqID:reqID}, {status:"DELIVERED"})
+                await supplierPending.updateMany({reqID:reqID,itemDescription: data.itemDescription}, {status:"DELIVERED"})
+
                 info.push(result)
                 console.log("INVOICEINFO", result)
             }
