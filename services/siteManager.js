@@ -3,9 +3,13 @@ let AppOrPending = require('../models/AppOrPenRequest');
 let pendingItems = require('../models/PendingItems');
 let invoice = require('../models/Invoice');
 let items = require('../models/Items');
+
 let ApprovedService = require('../services/ApproveOrPending');
 let itemsService = require('../services/Items');
 let userService = require('../services/user');
+let emailService = require('../services/emailTemplates');
+let supplier = require('../services/supplier');
+
 const {SiteManager} = require('../Constants');
 const {
     SITEMANAGER_APPROVE,SITEMANAGER_PENDING,SITEMANAGER_DECLINE
@@ -28,12 +32,14 @@ exports.getSiteManagerById = async (userID, userType) => {
 
 exports.updateSiteMnagerById = async (userID, body) => {
     console.log("here", userID)
-
+    try{
     const id = await Users.findOneAndUpdate({userID: userID}, body)
     if(id==null|| id == undefined)
         throw new Error("Unable to find user!")
-
     return id
+    }catch (e) {
+        console.log(e)
+    }
 }
 
 exports.deleteSiteManagerByID = async (userID) => {
@@ -64,26 +70,19 @@ exports.getSiteManagerApproval = async (body) => {
     console.log("CHECKK", mana.length)
     console.log("totalVal", reqID)
 
-    // if(managerApprovedItems.length !== 0 || mana.length !==0){
-    //     await ApprovedService.saveAppOrReq(empName, managerApprovedItems);
-    //     await ApprovedService.deletePendingItems(managerApprovedItems);
-    //     await ApprovedService.deleteFromItems(reqID);
-    //     return SITEMANAGER_APPROVE
-    // }
-
     if(mana.length !==0){
         await ApprovedService.saveAppOrReq(empName, body);
+        await supplier.saveItemsInSupplierTable(empName, body);
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_APPROVE
     }
     if(totalVal < 100000 ){
         await ApprovedService.saveAppOrReq(empName, body);
+        await supplier.saveItemsInSupplierTable(empName, body);
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_APPROVE
     }else{
-
         await this.savePendingValue(reqID)
-        // await ApprovedService.deleteFromApprovedItems(reqID)
         await itemsService.deleteItemsWhenApproved(body)
         return SITEMANAGER_PENDING
     }
@@ -97,14 +96,20 @@ exports.deleteItemsWhenReceived = async (body) => {
     let {reqID, itemDescription} = body
     const items = await AppOrPending.find({"reqID":reqIDs[0]})
     let result;
+    let info = [];
     for (const data of items) {
         for(const da of itemDescription){
             if(da === data.itemDescription){
-                await this.addReceivedItemsToInvoice(employeeName, data)
+                const invoiceInfo = await this.addReceivedItemsToInvoice(employeeName, data)
                 result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
+                info.push(result)
+                console.log("INVOICEINFO", result)
             }
         }
     }
+    await emailService.sendEmailWhenReceivedItems(info)
+    console.log("INVOICEINFO", info)
+
     return result
 }
 
@@ -176,3 +181,6 @@ exports.addReceivedItemsToInvoice = async (employeeName, data) => {
         const result = await orderDetails.save().then(()=> {console.log("Success!")})
         return result;
 }
+
+
+
