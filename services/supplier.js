@@ -293,6 +293,12 @@ exports.getDeliveredOrderInfoyIds = async () => {
 }
 
 exports.checkAvalibility = async (username, status) => {
-    const ava = await Users.updateOne({username: username}, {status:status})
-    return ava
+    const avaliability = await Users.updateOne({username: username}, {status:status})
+    return avaliability
+}
+
+exports.getTheStatus = async (username) => {
+    const status = await Users.find({username:username})
+    console.log(status[0].status)
+    return status[0].status
 }

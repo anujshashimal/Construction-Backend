@@ -122,4 +122,14 @@ router.post('/Supplieravalability', async (req, res) => {
     }
 })
 
+router.post('/checkTheSupplierStatus', async (req, res) => {
+    try{
+        const {username} = req.body
+        const result = await supplier.getTheStatus(username)
+        res.json({result:result})
+
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
 module.exports=router;

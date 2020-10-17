@@ -17,6 +17,10 @@ exports.RegisterUsers = async (body)=>{
     if(usernmeExits.length == 0){
         if(userType === SITEMANAGER_CONST|| userType === EMPLOYEE_CONST || userType === SUPPLIER_CONST || userType === MANAGER_CONST){
             const result = await userDetails.save();
+            if(userType === SUPPLIER_CONST){
+                console.log("www",userID)
+                await Users.updateOne({userID:userID}, {status:"available"})
+            }
             return result
         }else{
             throw new Error("Username Type is invlaid")
