@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const items = require('../services/Items');
 
+//add items
 router.post('/addItems', async( req, res) => {
     try{
         const body = req.body;
@@ -12,6 +13,7 @@ router.post('/addItems', async( req, res) => {
     }
 })
 
+//get the items by user
 router.post('/getItemsByUser', async (req, res) => {
     try{
         const body = req.body;
@@ -23,14 +25,16 @@ router.post('/getItemsByUser', async (req, res) => {
     }
 })
 
+//health check
 router.get('/health', async( req, res) => {
     try{
         res.status(200).send("passes");
     }catch (e){
         res.send({description:e.message})
     }
-} )
+})
 
+//get the requestion number list
 router.get('/getRequestingNumberList', async( req, res) => {
     try{
         const reqIDs = await items.getAllByReqNumber();
@@ -42,6 +46,7 @@ router.get('/getRequestingNumberList', async( req, res) => {
     }
 })
 
+//get the items by req number
 router.post('/getItemsByReqNumbers', async (req, res) => {
     try{
         const body = req.body;

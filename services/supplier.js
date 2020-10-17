@@ -33,7 +33,6 @@ let transporter = nodemailer.createTransport({
 
 exports.saveItemsInSupplierTable = async (empName, body)=>{
     try{
-    console.log("BOD",body)
     let arr = []
     let reqID, itemDescription,itemPrice,itemQty, status,approvedUser,employeeName;
     for (const data of body) {
@@ -41,10 +40,9 @@ exports.saveItemsInSupplierTable = async (empName, body)=>{
             itemDescription = data.itemDescription,
             itemPrice = data.itemPrice,
             itemQty= data.itemQty
-            status = "WAITING",
+            status = WAITING,
             approvedUser = data.username,
             employeeName = empName
-        console.log("HH", reqID, itemDescription,itemPrice,itemQty)
 
         const coll = new supplierItems({
             reqID,
@@ -90,7 +88,6 @@ exports.getSupplierEmail = async(supplier, reqID, body) => {
     getSupplierEmail.forEach(data => {Supplieremail = data.email})
     const orderInfo = await approvedItems.find({reqID:reqID})
 
-    // console.log("Order Info", orderInfo[0].Item_Description)
     orderInfo.forEach(data => {
         Item_Description.push(data.itemDescription)
         Item_Quantity.push(data.itemQty)

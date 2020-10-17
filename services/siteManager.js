@@ -37,8 +37,6 @@ exports.getSiteManagerById = async (userID, userType) => {
 }
 
 exports.updateSiteMnagerById = async (userID, body) => {
-
-    console.log("here", userID)
     try{
     const id = await Users.findOneAndUpdate({userID: userID}, body)
     if(id==null|| id == undefined)
@@ -50,11 +48,9 @@ exports.updateSiteMnagerById = async (userID, body) => {
 }
 
 exports.deleteSiteManagerByID = async (userID) => {
-
     const id = await Users.findOneAndDelete({userID: userID})
     if(id==null|| id == undefined)
         throw new Error("Unable to delete user!")
-
     return id
 }
 exports.getProductByID = async (userID) =>{
@@ -71,9 +67,9 @@ exports.getSiteManagerApproval = async (body) => {
         reqID = val.reqID
         empName = await userService.findEmployee(val.reqID)
     }
-    const mana = await this.getTheSign(reqID)
+    const getTheSign = await this.getTheSign(reqID)
 
-    if(mana.length !==0){
+    if(getTheSign.length !==0){
         await ApprovedService.saveAppOrReq(empName, body);
         await supplier.saveItemsInSupplierTable(empName, body);
         await itemsService.deleteItemsWhenApproved(body)
@@ -124,8 +120,8 @@ exports.deleteItemsWhenReceived = async (body) => {
 
 exports.declineRequestion = async (body) => {
     try{
-    const {reqID} = body
 
+    const {reqID} = body
     const declineReq = await items.deleteMany({ItemID:reqID})
     if(declineReq.deletedCount === 0)
         return null
@@ -133,7 +129,6 @@ exports.declineRequestion = async (body) => {
     }catch (e) {
         throw new Error(e)
     }
-
 }
 
 exports.savePendingValue = async (reqID) => {
@@ -145,7 +140,6 @@ exports.savePendingValue = async (reqID) => {
 
 exports.getTheStatusOfPendingStatus = async (reqID, status) => {
     try{
-    console.log("aqwd")
 
     console.log(reqID, status)
     const idset = await this.getALlPendingItemsId(reqID)
