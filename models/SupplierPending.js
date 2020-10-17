@@ -38,7 +38,7 @@ const SupplierPending = new Schema({
     },
     requiredDate:{
         type:String,
-    },
+    }
 });
 
 const SupplierPendingModel = mongoose.model('SupplierPendingItems',SupplierPending);

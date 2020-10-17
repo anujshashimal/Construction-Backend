@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 let AppOrPending = require('../models/AppOrPenRequest');
 let SupplierItems = require('../models/SupplierItems');
 let supplierService = require('./supplier');
+let supplierPending = require('../models/SupplierPending');
 
 const { v1: uuidv1 } = require('uuid');
 
@@ -45,10 +46,19 @@ exports.FINDReqIDExists = async (reqID) =>{
     return ReqIDList;
 }
 
+// exports.FindReqIDItems = async (reqID) => {
+//     let requestID = reqID;
+//     let itemsList = []
+//     const details = await AppOrPending.find({reqID: reqID})
+//
+//     details.forEach(data => itemsList.push(data));
+//     return itemsList;
+// }
+
 exports.FindReqIDItems = async (reqID) => {
     let requestID = reqID;
     let itemsList = []
-    const details = await AppOrPending.find({reqID: reqID})
+    const details = await supplierPending.find({reqID: reqID, status:"WAITING"})
 
     details.forEach(data => itemsList.push(data));
     return itemsList;
@@ -61,7 +71,7 @@ exports.FindAllItemsReqIdByOrderCollection = async () => {
     let reqIDs =[];
     const dat = await Order.find({}, {reqID:1})
 
-     dat.forEach(dat => {reqIDs.push(dat.reqID)})
+    dat.forEach(dat => {reqIDs.push(dat.reqID)})
 
     const unique = reqIDs.filter(onlyUnique);
 
@@ -87,4 +97,23 @@ exports.managerSaveOrderItems = async (body)=>{
     return result
 }
 
+exports.FindAllItemsReqIdByOrderCollectionSiteManager = async () => {
+    let reqIDs =[];
+    const dat = await AppOrPending.find({}, {reqID:1})
+    console.log("awdaf", dat)
+    dat.forEach(dat => {reqIDs.push(dat.reqID)})
+
+    const unique = reqIDs.filter(onlyUnique);
+
+    return unique;
+}
+
+exports.FindReqIDItemsSiteManager = async (reqID) => {
+    let requestID = reqID;
+    let itemsList = []
+    const details = await AppOrPending.find({reqID: reqID})
+
+    details.forEach(data => itemsList.push(data));
+    return itemsList;
+}
 

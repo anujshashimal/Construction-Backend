@@ -101,7 +101,7 @@ exports.deleteItemsWhenReceived = async (body) => {
     employeeName = await userService.findEmployee( body.reqID)
 
     let {reqID, itemDescription} = body
-    const items = await AppOrPending.find({"reqID":reqIDs[0]})
+    const items = await supplierPending.find({reqID:reqIDs[0]})
     let result;
     let info = [];
     for (const data of items) {
@@ -111,6 +111,8 @@ exports.deleteItemsWhenReceived = async (body) => {
                 result = await AppOrPending.findOneAndDelete({itemDescription: data.itemDescription})
                 // await supplierItems.updateMany({reqID:reqID}, {status:"DELIVERED"})
                 await supplierPending.updateMany({reqID:reqID,itemDescription: data.itemDescription}, {status:"DELIVERED"})
+                await supplierPending.updateMany({reqID:reqID,itemDescription: data.itemDescription})
+
 
                 info.push(result)
                 console.log("INVOICEINFO", result)
