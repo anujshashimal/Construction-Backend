@@ -111,5 +111,15 @@ router.get('/getAllDeliveredItemsId', async (req, res) => {
     }
 })
 
+router.post('/Supplieravalability', async (req, res) => {
+    try{
+        const {username, status} = req.body
+        const avaliablity = supplier.checkAvalibility(username, status)
+        res.json({result:"Status updated!"})
+
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
 
 module.exports=router;

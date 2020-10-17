@@ -56,9 +56,8 @@ router.post('/deleteProfile/:userID', async( req, res) => {
 router.get('/getSitemanager/product', async (req, res) => {
 
     try{
-        const {userID} = req.name;
         const reuslt = await siteManager.getProductByID();
-        res.json(result)
+        res.json(reuslt)
     }catch (e) {
         res.send({description:e.message})
     }

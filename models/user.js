@@ -21,6 +21,9 @@ const Users = new Schema({
     userType:{
         type:String,
         required: true
+    },
+    status:{
+        type:String,
     }
 });
 

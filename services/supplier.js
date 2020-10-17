@@ -4,6 +4,7 @@ let items = require('../models/Items');
 let approvedItems = require('../models/AppOrPenRequest');
 let SupplierPending = require('../models/SupplierPending');
 let supplierItems = require('../models/SupplierItems');
+let supplier = require('../models/supplier');
 
 const path = require('path');
 const nodemailer = require("nodemailer");
@@ -55,7 +56,7 @@ exports.saveItemsInSupplierTable = async (empName, body)=>{
 }
 
 exports.getAllSuppliers = async(userType) => {
-    const dat = await Users.find({userType: userType})
+    const dat = await Users.find({userType: userType, status:"available"})
     if(!dat)
         throw new Error("Unable to find suppliers");
     return dat;
@@ -289,4 +290,9 @@ exports.getDeliveredOrderInfoyIds = async () => {
     })
     return {result:uniqueArray}
 
+}
+
+exports.checkAvalibility = async (username, status) => {
+    const ava = await Users.updateOne({username: username}, {status:status})
+    return ava
 }
