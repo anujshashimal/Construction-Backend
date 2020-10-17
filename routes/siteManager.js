@@ -138,4 +138,24 @@ router.post('/declineRequest', async (req, res) => {
     }
 })
 
+
+//sdsdsd
+router.post('/siteManagergetAllApprovalItems', async(req, res) => {
+        try{
+            const result = await order.FindAllItemsReqIdByOrderCollectionSiteManager()
+            res.json({result})
+        }catch (e) {
+            res.send({description:e.message})
+        }
+})
+
+router.post('/SiteManagergetAllDetails', async(req, res) => {
+    try{
+        const {reqID} = req.body;
+        const result = await order.FindReqIDItemsSiteManager(reqID)
+        res.json(result);
+    }catch (e) {
+        res.send({description:e.message})
+    }
+})
 module.exports=router;
