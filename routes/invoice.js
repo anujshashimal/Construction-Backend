@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const invoice = require('../services/invoice');
 
+//get all the invoice ids which are releated to orders
 router.get('/getInvoiceIds',  async(req, res) => {
     try{
         const result = await invoice.getInvoiceIds()
@@ -13,6 +14,7 @@ router.get('/getInvoiceIds',  async(req, res) => {
     }
 })
 
+//get the invoice information by req id
 router.post('/getInvoiceInfoById',  async(req, res) => {
     try{
         const body = req.body

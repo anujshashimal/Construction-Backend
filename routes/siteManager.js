@@ -42,6 +42,7 @@ router.post('/updateProfile/:userID', async( req, res) => {
 })
 
 
+//Site manager delete profile
 router.post('/deleteProfile/:userID', async( req, res) => {
     try{
         const {userID} = req.params;
@@ -110,6 +111,7 @@ router.post('/getAllOrdersReqIds', async(req, res) => {
     }
 })
 
+//Site manager decline the request
 router.post('/deleteReceivedItems', async (req, res) => {
     try{
         const body = req.body;
@@ -138,7 +140,7 @@ router.post('/declineRequest', async (req, res) => {
 })
 
 
-//sdsdsd
+//get the all items that the supplier approved and item received to supplier
 router.post('/siteManagergetAllApprovalItems', async(req, res) => {
         try{
             const result = await order.FindAllItemsReqIdByOrderCollectionSiteManager()
@@ -148,6 +150,7 @@ router.post('/siteManagergetAllApprovalItems', async(req, res) => {
         }
 })
 
+//get the all details for reuqesting IDs
 router.post('/SiteManagergetAllDetails', async(req, res) => {
     try{
         const {reqID} = req.body;

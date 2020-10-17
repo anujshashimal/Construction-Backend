@@ -18,8 +18,10 @@ let transporter = nodemailer.createTransport({
 });
 
 exports.sendEmailWhenReceivedItems = async (items) => {
+    try{
     console.log(items)
     let username;
+    let email;
     let Item_Description = [];
     let Item_Quantity = [];
     let Item_AgreedPrice = [];
@@ -29,10 +31,11 @@ exports.sendEmailWhenReceivedItems = async (items) => {
         Item_Quantity.push(data.itemQty)
         Item_AgreedPrice.push(data.itemPrice)
         username = data.employeeName
+        email = data.email
     })
 
     let sentinfo = {
-        to: 'anujshashimal456@gmail.com',
+        to: email,
         subject: "Order is successfully delivered!",
         html:
             '<form style="background-color: #ffffff" ' +
@@ -40,11 +43,6 @@ exports.sendEmailWhenReceivedItems = async (items) => {
             ', </h1> <br /> <br />' + ' <img src="cid:Design01" style="width: 500px" /> ' + ' <br /> <br />' +
             '<p> Your order is successfully delivered!  </p>' +
             '<h2> Order Details </h2>' + '</br>' +
-            // '<h3> Sitemanager Name :' + username + '</h3>' + '</br>' +
-            // '<h3> Address Line 1 :' + body.addressline1 + '</h3>' + '</br>' +
-            // '<h3> Address Line 2 :' + body.addressline2 + '</h3>' + '</br>' +
-            // '<h3> Address Line 3 :' + body.other + '</h3>' + '</br>' +
-            // '<h3> Required Date :' + body.requiredDate + '</h3>' + '</br>' +
             '<h3> ***********  ORDERED ITEMS ********</h3>' +
             `<h2>${Item_Description},</h2>` +
             `<h2>${Item_Quantity},</h2>` +
@@ -61,7 +59,10 @@ exports.sendEmailWhenReceivedItems = async (items) => {
         if (err) {
             console.log(err);
         } else {
-            console.error("SENT ");
+            console.error("SENT");
         }
     })
+    }catch (e) {
+        throw new Error(e)
+    }
 }

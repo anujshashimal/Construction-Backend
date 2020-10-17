@@ -3,5 +3,5 @@ module.exports ={
     EMPLOYEE_CONST :"employee",
     SITEMANAGER_CONST :"sitemanager",
     MANAGER_CONST :"manager",
-
+    AVAILABLE: "available"
 }

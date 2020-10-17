@@ -13,7 +13,10 @@ const process = require('process');
 const {SupplierConst} = require('../Constants');
 const {
     INDUSTRY_EMAIL,
-    INDUSTRY_PASSWORD
+    INDUSTRY_PASSWORD,
+    WAITING,
+    DELIVERED,
+    AVAILABLE
 } = SupplierConst
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
@@ -29,6 +32,7 @@ let transporter = nodemailer.createTransport({
 });
 
 exports.saveItemsInSupplierTable = async (empName, body)=>{
+    try{
     console.log("BOD",body)
     let arr = []
     let reqID, itemDescription,itemPrice,itemQty, status,approvedUser,employeeName;
@@ -53,10 +57,13 @@ exports.saveItemsInSupplierTable = async (empName, body)=>{
         })
         const result = await coll.save().then(()=> {console.log("Success!")})
     }
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.getAllSuppliers = async(userType) => {
-    const dat = await Users.find({userType: userType, status:"available"})
+    const dat = await Users.find({userType: userType, status: AVAILABLE})
     if(!dat)
         throw new Error("Unable to find suppliers");
     return dat;
@@ -71,6 +78,8 @@ exports.getSuppliersItems = async (body) => {
 }
 
 exports.getSupplierEmail = async(supplier, reqID, body) => {
+    try{
+
     let Supplieremail;
     let OrderInfo;
     let Item_Description = [];
@@ -121,8 +130,12 @@ exports.getSupplierEmail = async(supplier, reqID, body) => {
             console.error("SENT ");
         }
     })
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 exports.getSupplierItemsByName = async (username) => {
+    try{
     let ids = [];
     let uniqueArray = [];
 
@@ -135,9 +148,13 @@ exports.getSupplierItemsByName = async (username) => {
     })
 
     return uniqueArray
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.getItemsBySupplierReqIds = async (reqID) => {
+    try{
     let ids = [];
     let uniqueArray = [];
     console.log("data")
@@ -155,9 +172,13 @@ exports.getItemsBySupplierReqIds = async (reqID) => {
     })
 
     return data
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
+
     try{
     let ids = [];
     let uniqueArray = [];
@@ -169,7 +190,7 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
 
             const data = await supplierItems.find({reqID: reqID[0], itemDescription: obj})
             const val = await this.saveSupplierPendingValue(data);
-            await SupplierPending.updateMany({reqID:reqID[0],itemDescription: obj}, {status:"WAITING"})
+            await SupplierPending.updateMany({reqID:reqID[0],itemDescription: obj}, {status: WAITING})
             await supplierItems.deleteMany({itemDescription: obj})
 
             data.forEach(item => {
@@ -184,10 +205,10 @@ exports.getSelectedItemsBySupplierReqIds = async (itemDescription,reqID) => {
 }
 
 exports.saveSupplierPendingValue = async (data) => {
-    console.log("adw", data)
+    try{
+
     let result;
     let status = "WAITING"
-    try{
     for (const item of data) {
     const {reqID, itemDescription, itemPrice,itemQty, approvedUser, addressline1, addressline2, other, requiredDate} = item;
     const  orderDetails = new SupplierPending({
@@ -212,6 +233,7 @@ exports.saveSupplierPendingValue = async (data) => {
     }
     }
 exports.getPendingOrderList = async (reqID) => {
+    try{
     let uniqueArr = [];
     const result = await SupplierPending.find({reqID: reqID})
     console.log(result)
@@ -221,13 +243,17 @@ exports.getPendingOrderList = async (reqID) => {
     })
 
     return result
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.getPendingOrderListIds = async () => {
+    try{
     let reqIds = []
     let uniqueArray = [];
 
-    const result = await SupplierPending.find({status:"WAITING"})
+    const result = await SupplierPending.find({status: WAITING})
 
     result.forEach(data => {
         reqIds.push(data.reqID)
@@ -237,14 +263,17 @@ exports.getPendingOrderListIds = async () => {
         return reqIds.indexOf(item) == pos;
     })
     return {result:uniqueArray}
-
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.getDeliveredOrderListIds = async () => {
+    try{
     let reqIds = []
     let uniqueArray = [];
 
-    const result = await SupplierPending.find({status:"DELIVERED"})
+    const result = await SupplierPending.find({status:DELIVERED})
 
     result.forEach(data => {
         reqIds.push(data.reqID)
@@ -254,13 +283,16 @@ exports.getDeliveredOrderListIds = async () => {
         return reqIds.indexOf(item) == pos;
     })
     return {result:uniqueArray}
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.getPendingOrderInfoyIds = async (reqID) => {
     let reqIds = []
     let uniqueArray = [];
 
-    const result = await SupplierPending.find({reqID:reqID,status:"WAITING"})
+    const result = await SupplierPending.find({reqID:reqID,status:WAITING})
 
 
     return result
@@ -268,18 +300,18 @@ exports.getPendingOrderInfoyIds = async (reqID) => {
 
 exports.getDeliveredOrderIds = async (reqID) => {
 
-    const result = await SupplierPending.find({reqID:reqID,status:"DELIVERED"})
+    const result = await SupplierPending.find({reqID:reqID,status:DELIVERED})
 
 
     return result
 }
 
 exports.getDeliveredOrderInfoyIds = async () => {
-
+try{
     let reqIds = []
     let uniqueArray = [];
 
-    const result = await SupplierPending.find({status:"DELIVERED"})
+    const result = await SupplierPending.find({status:DELIVERED})
 
     result.forEach(data => {
         reqIds.push(data.reqID)
@@ -289,7 +321,9 @@ exports.getDeliveredOrderInfoyIds = async () => {
         return reqIds.indexOf(item) == pos;
     })
     return {result:uniqueArray}
-
+}catch (e) {
+    throw new Error(e)
+}
 }
 
 exports.checkAvalibility = async (username, status) => {

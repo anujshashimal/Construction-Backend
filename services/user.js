@@ -1,9 +1,10 @@
 let Users = require('../models/user');
 const { v1: uuidv1 } = require('uuid');
 const { User } = require('../Constants');
-const { SUPPLIER_CONST, EMPLOYEE_CONST, MANAGER_CONST, SITEMANAGER_CONST} = User
+const { SUPPLIER_CONST, EMPLOYEE_CONST, MANAGER_CONST, SITEMANAGER_CONST, AVAILABLE} = User
 
 exports.RegisterUsers = async (body)=>{
+    try{
     const {username, password, email,userType} = body;
     const userID = uuidv1();
     const  userDetails = new Users({
@@ -18,8 +19,7 @@ exports.RegisterUsers = async (body)=>{
         if(userType === SITEMANAGER_CONST|| userType === EMPLOYEE_CONST || userType === SUPPLIER_CONST || userType === MANAGER_CONST){
             const result = await userDetails.save();
             if(userType === SUPPLIER_CONST){
-                console.log("www",userID)
-                await Users.updateOne({userID:userID}, {status:"available"})
+                await Users.updateOne({userID:userID}, {status:AVAILABLE})
             }
             return result
         }else{
@@ -27,6 +27,9 @@ exports.RegisterUsers = async (body)=>{
         }
     }
     throw new Error("Username already exists!")
+    }catch (e) {
+        throw new Error(e)
+    }
 }
 
 exports.LoginUser = async (body) => {
